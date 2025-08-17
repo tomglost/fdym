@@ -1,692 +1,318 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fitness Challenge Dashboard</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+// Configuration
+const API_URL = 'https://worker1.tomgloster-aus.workers.dev/';
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
+// Activity definitions
+const activities = {
+    row: { multiplier: 0.75, unit: 'km', label: 'Row' },
+    run: { multiplier: 1.5, unit: 'km', label: 'Run' },
+    swim: { multiplier: 2.5, unit: 'km', label: 'Swim' },
+    bike: { multiplier: 0.5, unit: 'km', label: 'Bike' },
+    walk: { multiplier: 0.5, unit: 'km', label: 'Walk' },
+    stairmaster: { multiplier: 2, unit: '1000 steps', label: 'Stairmaster' },
+    gym: { multiplier: 3, unit: 'hour', label: 'Gym/Pilates' },
+    tennis: { multiplier: 4, unit: 'hour', label: 'Tennis/Soccer' },
+    basketball_training: { multiplier: 3, unit: 'hour', label: 'Basketball Training' },
+    basketball_game: { multiplier: 4, unit: 'hour', label: 'Basketball Game' }
+};
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
-            overflow: hidden;
-        }
+// Global state
+let participants = {};
+let activities_log = [];
+let isConnected = false;
+let autoRefreshInterval;
 
-        .header {
-            background: linear-gradient(135deg, #ff6b6b 0%, #ffa500 100%);
-            color: white;
-            padding: 30px;
-            text-align: center;
-        }
+// Update connection status
+function updateConnectionStatus(status, message) {
+    const statusElement = document.getElementById('connectionStatus');
+    statusElement.className = `connection-status ${status}`;
+    
+    const icons = {
+        connecting: '🔄',
+        connected: '✅',
+        error: '❌'
+    };
+    
+    statusElement.innerHTML = `${icons[status]} ${message}`;
+}
 
-        .header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        }
-
-        .header p {
-            font-size: 1.2rem;
-            opacity: 0.9;
-        }
-
-        .connection-status {
-            padding: 15px;
-            margin: 20px;
-            border-radius: 10px;
-            text-align: center;
-            font-weight: 600;
-        }
-
-        .connection-status.connecting {
-            background: #fff3cd;
-            color: #856404;
-            border: 2px solid #ffeaa7;
-        }
-
-        .connection-status.connected {
-            background: #d4edda;
-            color: #155724;
-            border: 2px solid #c3e6cb;
-        }
-
-        .connection-status.error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 2px solid #f5c6cb;
-        }
-
-        .main-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            padding: 30px;
-        }
-
-        .section {
-            background: #f8f9fa;
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-        }
-
-        .section h2 {
-            color: #333;
-            margin-bottom: 20px;
-            font-size: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: 600;
-            color: #555;
-        }
-
-        input, select {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 16px;
-            transition: border-color 0.3s;
-        }
-
-        input:focus, select:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-
-        button {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: 600;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        button:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
-        }
-
-        button:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
-
-        .leaderboard {
-            grid-column: span 2;
-        }
-
-        .leaderboard-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: white;
-            padding: 15px 20px;
-            margin-bottom: 10px;
-            border-radius: 10px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            transition: transform 0.2s;
-        }
-
-        .leaderboard-item:hover {
-            transform: translateX(5px);
-        }
-
-        .rank {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #667eea;
-            min-width: 40px;
-        }
-
-        .rank.gold { color: #ffd700; }
-        .rank.silver { color: #c0c0c0; }
-        .rank.bronze { color: #cd7f32; }
-
-        .participant-name {
-            flex-grow: 1;
-            margin-left: 15px;
-            font-size: 1.2rem;
-            font-weight: 600;
-        }
-
-        .points {
-            font-size: 1.3rem;
-            font-weight: bold;
-            color: #ff6b6b;
-        }
-
-        .activity-log {
-            grid-column: span 2;
-            max-height: 400px;
-            overflow-y: auto;
-        }
-
-        .activity-item {
-            background: white;
-            padding: 15px;
-            margin-bottom: 10px;
-            border-radius: 8px;
-            border-left: 4px solid #667eea;
-        }
-
-        .activity-header {
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 5px;
-        }
-
-        .activity-details {
-            color: #666;
-            font-size: 0.9rem;
-        }
-
-        .points-multipliers {
-            background: #e8f4f8;
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 20px;
-        }
-
-        .multiplier-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 5px 0;
-            font-size: 0.9rem;
-        }
-
-        .empty-state {
-            text-align: center;
-            color: #999;
-            padding: 40px;
-            font-style: italic;
-        }
-
-        .refresh-btn {
-            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-            font-size: 14px;
-            padding: 8px 16px;
-            margin-left: auto;
-        }
-
-        .last-updated {
-            font-size: 0.85rem;
-            color: #666;
-            text-align: center;
-            margin-bottom: 15px;
-        }
-
-        .loading {
-            opacity: 0.6;
-            pointer-events: none;
-        }
-
-        .auto-refresh {
-            font-size: 0.8rem;
-            color: #666;
-            text-align: center;
-            margin-top: 10px;
-            font-style: italic;
-        }
-
-        @media (max-width: 768px) {
-            .main-content {
-                grid-template-columns: 1fr;
-                gap: 20px;
-                padding: 20px;
+// API call helper - FIXED VERSION
+async function callAPI(action, data = {}) {
+    try {
+        console.log('Calling API with action:', action, 'data:', data);
+        
+        const url = `${API_URL}?action=${action}`;
+        
+        const options = {
+            method: 'GET', // Default to GET
+            mode: 'cors',
+            headers: {
+                'Content-Type': 'application/json',
             }
-            
-            .leaderboard, .activity-log {
-                grid-column: span 1;
-            }
-            
-            .header h1 {
-                font-size: 2rem;
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h1>🏃‍♂️ Fitness Challenge Dashboard</h1>
-            <p>Track your activities and compete with friends!</p>
-        </div>
-
-        <div id="connectionStatus" class="connection-status connecting">
-            🔄 Connecting to Google Sheets...
-        </div>
-
-        <div class="main-content">
-            <!-- Leaderboard Section -->
-            <div class="section leaderboard">
-                <h2>
-                    🏆 Leaderboard
-                    <button class="refresh-btn" onclick="refreshData()">🔄 Refresh</button>
-                </h2>
-                <div class="last-updated" id="lastUpdated">
-                    Last updated: Loading...
-                </div>
-                <div id="leaderboardContent">
-                    <div class="empty-state">
-                        Loading leaderboard...
-                    </div>
-                </div>
-                <div class="auto-refresh">
-                    Auto-refreshes every 30 seconds
-                </div>
-            </div>
-
-            <!-- Add Activity Section -->
-            <div class="section">
-                <h2>📝 Add Activity</h2>
-                
-                <div class="points-multipliers">
-                    <h3>Points Guide:</h3>
-                    <div class="multiplier-item"><span>Row</span><span>0.75 per km</span></div>
-                    <div class="multiplier-item"><span>Run</span><span>1.5 per km</span></div>
-                    <div class="multiplier-item"><span>Swim</span><span>2.5 per km</span></div>
-                    <div class="multiplier-item"><span>Bike</span><span>0.5 per km</span></div>
-                    <div class="multiplier-item"><span>Walk</span><span>0.5 per km</span></div>
-                    <div class="multiplier-item"><span>Stairmaster</span><span>2 per 1000 steps</span></div>
-                    <div class="multiplier-item"><span>Gym/Pilates</span><span>3 per hour</span></div>
-                    <div class="multiplier-item"><span>Tennis/Soccer</span><span>4 per hour</span></div>
-                    <div class="multiplier-item"><span>Basketball Training</span><span>3 per hour</span></div>
-                    <div class="multiplier-item"><span>Basketball Game</span><span>4 per hour</span></div>
-                </div>
-
-                <form id="activityForm">
-                    <div class="form-group">
-                        <label for="participantName">Participant</label>
-                        <select id="participantName" required>
-                            <option value="">Select participant...</option>
-                            <option value="Juliette">Juliette</option>
-                            <option value="Bea">Bea</option>
-                            <option value="Jeffrey">Jeffrey</option>
-                            <option value="Brooke">Brooke</option>
-                            <option value="Seb">Seb</option>
-                            <option value="Jack">Jack</option>
-                            <option value="Cameron">Cameron</option>
-                            <option value="Renee">Renee</option>
-                            <option value="Olivia">Olivia</option>
-                            <option value="Sarah">Sarah</option>
-                            <option value="Tom">Tom</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="activityType">Activity Type</label>
-                        <select id="activityType" required onchange="updateDistanceLabel()">
-                            <option value="">Select activity...</option>
-                            <option value="row">Row</option>
-                            <option value="run">Run</option>
-                            <option value="swim">Swim</option>
-                            <option value="bike">Bike</option>
-                            <option value="walk">Walk</option>
-                            <option value="stairmaster">Stairmaster</option>
-                            <option value="gym">Gym/Pilates</option>
-                            <option value="tennis">Tennis/Soccer</option>
-                            <option value="basketball_training">Basketball Training</option>
-                            <option value="basketball_game">Basketball Game</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="distance" id="distanceLabel">Amount</label>
-                        <input type="number" id="distance" step="0.1" min="0.1" required>
-                        <small id="distanceHint" style="color: #666; font-size: 0.85rem; margin-top: 5px; display: block;"></small>
-                    </div>
-
-                    <button type="submit" id="submitBtn">Add Activity</button>
-                </form>
-            </div>
-
-            <!-- Recent Activities Section -->
-            <div class="section activity-log">
-                <h2>📊 Recent Activities</h2>
-                <div id="activityLogContent">
-                    <div class="empty-state">
-                        Loading activities...
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        // Configuration
-        const API_URL = 'https://worker1.tomgloster-aus.workers.dev/';
-
-        // Activity definitions
-        const activities = {
-            row: { multiplier: 0.75, unit: 'km', label: 'Row' },
-            run: { multiplier: 1.5, unit: 'km', label: 'Run' },
-            swim: { multiplier: 2.5, unit: 'km', label: 'Swim' },
-            bike: { multiplier: 0.5, unit: 'km', label: 'Bike' },
-            walk: { multiplier: 0.5, unit: 'km', label: 'Walk' },
-            stairmaster: { multiplier: 2, unit: '1000 steps', label: 'Stairmaster' },
-            gym: { multiplier: 3, unit: 'hour', label: 'Gym/Pilates' },
-            tennis: { multiplier: 4, unit: 'hour', label: 'Tennis/Soccer' },
-            basketball_training: { multiplier: 3, unit: 'hour', label: 'Basketball Training' },
-            basketball_game: { multiplier: 4, unit: 'hour', label: 'Basketball Game' }
         };
 
-        // Global state
-        let participants = {};
-        let activities_log = [];
-        let isConnected = false;
-        let autoRefreshInterval;
+        // Only use POST if we have data to send
+        if (data && Object.keys(data).length > 0) {
+            options.method = 'POST';
+            options.body = JSON.stringify({ action, ...data });
+        }
 
-        // Update connection status
-        function updateConnectionStatus(status, message) {
-            const statusElement = document.getElementById('connectionStatus');
-            statusElement.className = `connection-status ${status}`;
+        console.log('Fetch URL:', url);
+        console.log('Fetch options:', options);
+
+        const response = await fetch(url, options);
+        console.log('Response status:', response.status);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const result = await response.json();
+        console.log('API response:', result);
+        
+        return result;
+    } catch (error) {
+        console.error('API call failed:', error);
+        console.error('Error details:', error.message);
+        throw error;
+    }
+}
+
+// Load leaderboard data
+async function loadLeaderboard() {
+    try {
+        console.log('Loading leaderboard...');
+        const result = await callAPI('getLeaderboard');
+        
+        console.log('Leaderboard result:', result);
+        
+        if (result.success) {
+            participants = result.participants;
+            console.log('Participants loaded:', participants);
+            updateLeaderboard();
             
-            const icons = {
-                connecting: '🔄',
-                connected: '✅',
-                error: '❌'
-            };
-            
-            statusElement.innerHTML = `${icons[status]} ${message}`;
-        }
-
-        // API call helper
-        async function callAPI(action, data = {}) {
-            try {
-                const url = `${API_URL}?action=${action}`;
-                const options = {
-                    method: data && Object.keys(data).length > 0 ? 'POST' : 'GET',
-                    mode: 'cors',
-                };
-
-                if (data && Object.keys(data).length > 0) {
-                    options.headers = {
-                        'Content-Type': 'application/json',
-                    };
-                    options.body = JSON.stringify({ action, ...data });
-                }
-
-                const response = await fetch(url, options);
-                return await response.json();
-            } catch (error) {
-                console.error('API call failed:', error);
-                throw error;
+            if (!isConnected) {
+                isConnected = true;
+                updateConnectionStatus('connected', 'Connected to Google Sheets! Data syncs in real-time.');
+                startAutoRefresh();
             }
+        } else {
+            throw new Error(result.error || 'Failed to load leaderboard');
+        }
+    } catch (error) {
+        console.error('Error loading leaderboard:', error);
+        updateConnectionStatus('error', 'Connection failed: ' + error.message);
+    }
+}
+
+// Load activities data
+async function loadActivities() {
+    try {
+        console.log('Loading activities...');
+        const result = await callAPI('getActivities');
+        
+        console.log('Activities result:', result);
+        
+        if (result.success) {
+            activities_log = result.activities || [];
+            console.log('Activities loaded:', activities_log);
+            updateActivityLog();
+        } else {
+            throw new Error(result.error || 'Failed to load activities');
+        }
+    } catch (error) {
+        console.error('Error loading activities:', error);
+        // Don't show error for activities if leaderboard works
+        if (!isConnected) {
+            updateConnectionStatus('error', 'Connection failed: ' + error.message);
+        }
+    }
+}
+
+// Save activity to Google Sheets
+async function saveActivity(participant, activityType, amount) {
+    const activity = activities[activityType];
+    const points = amount * activity.multiplier;
+    const timestamp = new Date().toISOString();
+    
+    const activityData = {
+        id: Date.now(),
+        participant,
+        activity: activity.label,
+        amount,
+        unit: activity.unit,
+        points,
+        timestamp
+    };
+
+    try {
+        console.log('Saving activity:', activityData);
+        const result = await callAPI('addActivity', activityData);
+        
+        if (result.success) {
+            console.log('Activity saved successfully');
+            // Refresh data to show the new activity
+            await refreshData();
+            return true;
+        } else {
+            throw new Error(result.error || 'Failed to save activity');
+        }
+    } catch (error) {
+        console.error('Error saving activity:', error);
+        alert('Failed to save activity: ' + error.message);
+        return false;
+    }
+}
+
+// Refresh all data
+async function refreshData() {
+    console.log('Refreshing all data...');
+    const container = document.querySelector('.container');
+    container.classList.add('loading');
+    
+    try {
+        await Promise.all([
+            loadLeaderboard(),
+            loadActivities()
+        ]);
+        updateLastUpdated();
+        console.log('Data refresh completed');
+    } catch (error) {
+        console.error('Error refreshing data:', error);
+    } finally {
+        container.classList.remove('loading');
+    }
+}
+
+// Update last updated timestamp
+function updateLastUpdated() {
+    const now = new Date();
+    const lastUpdatedElement = document.getElementById('lastUpdated');
+    if (lastUpdatedElement) {
+        lastUpdatedElement.textContent = `Last updated: ${now.toLocaleTimeString()}`;
+    }
+}
+
+// Start auto-refresh
+function startAutoRefresh() {
+    if (autoRefreshInterval) clearInterval(autoRefreshInterval);
+    autoRefreshInterval = setInterval(refreshData, 30000); // 30 seconds
+    console.log('Auto-refresh started');
+}
+
+// Update distance label based on selected activity
+function updateDistanceLabel() {
+    const activityType = document.getElementById('activityType').value;
+    const distanceLabel = document.getElementById('distanceLabel');
+    const distanceHint = document.getElementById('distanceHint');
+    const distanceInput = document.getElementById('distance');
+
+    if (activityType && activities[activityType]) {
+        const activity = activities[activityType];
+        distanceLabel.textContent = `Amount (${activity.unit})`;
+        distanceHint.textContent = `${activity.multiplier} points per ${activity.unit}`;
+        
+        if (activity.unit === 'hour') {
+            distanceInput.step = '0.25';
+            distanceInput.placeholder = 'e.g., 1.5';
+        } else if (activity.unit === '1000 steps') {
+            distanceInput.step = '1';
+            distanceInput.placeholder = 'e.g., 8 (for 8000 steps)';
+        } else {
+            distanceInput.step = '0.1';
+            distanceInput.placeholder = 'e.g., 5.0';
+        }
+    } else {
+        distanceLabel.textContent = 'Amount';
+        distanceHint.textContent = '';
+        distanceInput.placeholder = '';
+    }
+}
+
+// Update leaderboard display
+function updateLeaderboard() {
+    console.log('Updating leaderboard display with participants:', participants);
+    const leaderboardContent = document.getElementById('leaderboardContent');
+    
+    const sortedParticipants = Object.entries(participants)
+        .sort(([,a], [,b]) => b.totalPoints - a.totalPoints);
+
+    console.log('Sorted participants:', sortedParticipants);
+
+    if (sortedParticipants.length === 0) {
+        leaderboardContent.innerHTML = '<div class="empty-state">No activities recorded yet. Add some activities to see the leaderboard!</div>';
+        return;
+    }
+
+    let html = '';
+    sortedParticipants.forEach(([name, data], index) => {
+        const rank = index + 1;
+        let rankClass = '';
+        let rankDisplay = `#${rank}`;
+        
+        if (rank === 1 && data.totalPoints > 0) {
+            rankClass = 'gold';
+            rankDisplay = '🥇';
+        } else if (rank === 2 && data.totalPoints > 0) {
+            rankClass = 'silver';
+            rankDisplay = '🥈';
+        } else if (rank === 3 && data.totalPoints > 0) {
+            rankClass = 'bronze';
+            rankDisplay = '🥉';
         }
 
-        // Load leaderboard data
-        async function loadLeaderboard() {
-            try {
-                const result = await callAPI('getLeaderboard');
-                if (result.success) {
-                    participants = result.participants;
-                    updateLeaderboard();
-                    if (!isConnected) {
-                        isConnected = true;
-                        updateConnectionStatus('connected', 'Connected to Google Sheets! Data syncs in real-time.');
-                        startAutoRefresh();
-                    }
-                } else {
-                    throw new Error(result.error || 'Failed to load leaderboard');
-                }
-            } catch (error) {
-                console.error('Error loading leaderboard:', error);
-                updateConnectionStatus('error', 'Connection failed. Check your internet connection.');
-            }
-        }
+        html += `
+            <div class="leaderboard-item">
+                <div class="rank ${rankClass}">${rankDisplay}</div>
+                <div class="participant-name">${name}</div>
+                <div class="points">${data.totalPoints.toFixed(1)} pts</div>
+            </div>
+        `;
+    });
 
-        // Load activities data
-        async function loadActivities() {
-            try {
-                const result = await callAPI('getActivities');
-                if (result.success) {
-                    activities_log = result.activities || [];
-                    updateActivityLog();
-                } else {
-                    throw new Error(result.error || 'Failed to load activities');
-                }
-            } catch (error) {
-                console.error('Error loading activities:', error);
-            }
-        }
+    leaderboardContent.innerHTML = html;
+}
 
-        // Save activity to Google Sheets
-        async function saveActivity(participant, activityType, amount) {
-            const activity = activities[activityType];
-            const points = amount * activity.multiplier;
-            const timestamp = new Date().toISOString();
-            
-            const activityData = {
-                id: Date.now(),
-                participant,
-                activity: activity.label,
-                amount,
-                unit: activity.unit,
-                points,
-                timestamp
-            };
+// Update activity log display
+function updateActivityLog() {
+    console.log('Updating activity log with activities:', activities_log);
+    const activityLogContent = document.getElementById('activityLogContent');
+    
+    if (!activities_log || activities_log.length === 0) {
+        activityLogContent.innerHTML = '<div class="empty-state">No activities logged yet. Add an activity above to get started!</div>';
+        return;
+    }
 
-            try {
-                const result = await callAPI('addActivity', activityData);
-                if (result.success) {
-                    // Refresh data to show the new activity
-                    await refreshData();
-                    return true;
-                } else {
-                    throw new Error(result.error || 'Failed to save activity');
-                }
-            } catch (error) {
-                console.error('Error saving activity:', error);
-                alert('Failed to save activity: ' + error.message);
-                return false;
-            }
-        }
+    let html = '';
+    activities_log.slice(0, 20).forEach(activity => {
+        const date = new Date(activity.timestamp).toLocaleDateString();
+        const time = new Date(activity.timestamp).toLocaleTimeString();
+        
+        html += `
+            <div class="activity-item">
+                <div class="activity-header">
+                    ${activity.participant} - ${activity.activity}
+                </div>
+                <div class="activity-details">
+                    ${activity.amount} ${activity.unit} • ${parseFloat(activity.points).toFixed(1)} points • ${date} ${time}
+                </div>
+            </div>
+        `;
+    });
 
-        // Refresh all data
-        async function refreshData() {
-            const container = document.querySelector('.container');
-            container.classList.add('loading');
-            
-            try {
-                await Promise.all([
-                    loadLeaderboard(),
-                    loadActivities()
-                ]);
-                updateLastUpdated();
-            } catch (error) {
-                console.error('Error refreshing data:', error);
-            } finally {
-                container.classList.remove('loading');
-            }
-        }
+    activityLogContent.innerHTML = html;
+}
 
-        // Update last updated timestamp
-        function updateLastUpdated() {
-            const now = new Date();
-            document.getElementById('lastUpdated').textContent = `Last updated: ${now.toLocaleTimeString()}`;
-        }
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Page loaded, initializing...');
+    updateConnectionStatus('connecting', 'Connecting to Google Sheets...');
+    refreshData();
+});
 
-        // Start auto-refresh
-        function startAutoRefresh() {
-            if (autoRefreshInterval) clearInterval(autoRefreshInterval);
-            autoRefreshInterval = setInterval(refreshData, 30000); // 30 seconds
-        }
-
-        // Update distance label based on selected activity
-        function updateDistanceLabel() {
-            const activityType = document.getElementById('activityType').value;
-            const distanceLabel = document.getElementById('distanceLabel');
-            const distanceHint = document.getElementById('distanceHint');
-            const distanceInput = document.getElementById('distance');
-
-            if (activityType && activities[activityType]) {
-                const activity = activities[activityType];
-                distanceLabel.textContent = `Amount (${activity.unit})`;
-                distanceHint.textContent = `${activity.multiplier} points per ${activity.unit}`;
-                
-                if (activity.unit === 'hour') {
-                    distanceInput.step = '0.25';
-                    distanceInput.placeholder = 'e.g., 1.5';
-                } else if (activity.unit === '1000 steps') {
-                    distanceInput.step = '1';
-                    distanceInput.placeholder = 'e.g., 8 (for 8000 steps)';
-                } else {
-                    distanceInput.step = '0.1';
-                    distanceInput.placeholder = 'e.g., 5.0';
-                }
-            } else {
-                distanceLabel.textContent = 'Amount';
-                distanceHint.textContent = '';
-                distanceInput.placeholder = '';
-            }
-        }
-
-        // Update leaderboard display
-        function updateLeaderboard() {
-            const leaderboardContent = document.getElementById('leaderboardContent');
-            
-            const sortedParticipants = Object.entries(participants)
-                .sort(([,a], [,b]) => b.totalPoints - a.totalPoints);
-
-            let html = '';
-            sortedParticipants.forEach(([name, data], index) => {
-                const rank = index + 1;
-                let rankClass = '';
-                let rankDisplay = `#${rank}`;
-                
-                if (rank === 1 && data.totalPoints > 0) {
-                    rankClass = 'gold';
-                    rankDisplay = '🥇';
-                } else if (rank === 2 && data.totalPoints > 0) {
-                    rankClass = 'silver';
-                    rankDisplay = '🥈';
-                } else if (rank === 3 && data.totalPoints > 0) {
-                    rankClass = 'bronze';
-                    rankDisplay = '🥉';
-                }
-
-                html += `
-                    <div class="leaderboard-item">
-                        <div class="rank ${rankClass}">${rankDisplay}</div>
-                        <div class="participant-name">${name}</div>
-                        <div class="points">${data.totalPoints.toFixed(1)} pts</div>
-                    </div>
-                `;
-            });
-
-            leaderboardContent.innerHTML = html || '<div class="empty-state">No participants found</div>';
-        }
-
-        // Update activity log display
-        function updateActivityLog() {
-            const activityLogContent = document.getElementById('activityLogContent');
-            
-            if (activities_log.length === 0) {
-                activityLogContent.innerHTML = '<div class="empty-state">No activities logged yet.</div>';
-                return;
-            }
-
-            let html = '';
-            activities_log.slice(0, 20).forEach(activity => {
-                const date = new Date(activity.timestamp).toLocaleDateString();
-                const time = new Date(activity.timestamp).toLocaleTimeString();
-                
-                html += `
-                    <div class="activity-item">
-                        <div class="activity-header">
-                            ${activity.participant} - ${activity.activity}
-                        </div>
-                        <div class="activity-details">
-                            ${activity.amount} ${activity.unit} • ${parseFloat(activity.points).toFixed(1)} points • ${date} ${time}
-                        </div>
-                    </div>
-                `;
-            });
-
-            activityLogContent.innerHTML = html;
-        }
-
-        // Handle form submission
-        document.getElementById('activityForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const submitBtn = document.getElementById('submitBtn');
-            const originalText = submitBtn.textContent;
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Saving...';
-            
-            const participant = document.getElementById('participantName').value;
-            const activityType = document.getElementById('activityType').value;
-            const amount = parseFloat(document.getElementById('distance').value);
-
-            if (!participant || !activityType || !amount) {
-                alert('Please fill in all fields');
-                submitBtn.disabled = false;
-                submitBtn.textContent = originalText;
-                return;
-            }
-
-            const success = await saveActivity(participant, activityType, amount);
-            
-            if (success) {
-                // Clear form except participant
-                document.getElementById('activityType').value = '';
-                document.getElementById('distance').value = '';
-                updateDistanceLabel();
-                
-                const activity = activities[activityType];
-                const points = amount * activity.multiplier;
-                alert(`Activity added! ${participant} earned ${points.toFixed(1)} points for ${amount} ${activity.unit} of ${activity.label}.`);
-            }
-
-            submitBtn.disabled = false;
-            submitBtn.textContent = originalText;
-        });
-
-        // Initialize on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            updateConnectionStatus('connecting', 'Connecting to Google Sheets...');
-            refreshData();
-        });
-
-        // Handle page visibility change (refresh when tab becomes visible)
-        document.addEventListener('visibilitychange', function() {
-            if (!document.hidden && isConnected) {
-                refreshData();
-            }
-        });
-    </script>
-</body>
-</html>
+// Handle page visibility change (refresh when tab becomes visible)
+document.addEventListener('visibilitychange', function() {
+    if (!document.hidden && isConnected) {
+        console.log('Page became visible, refreshing data...');
+        refreshData();
+    }
+});
