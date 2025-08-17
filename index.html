@@ -364,7 +364,7 @@
 
                     <div class="form-group">
                         <label for="distance" id="distanceLabel">Amount</label>
-                        <input type="number" id="distance" step="0.1" min="0.1" required>
+                        <input type="number" id="distance" step="0.01" min="0.01" required>
                         <small id="distanceHint" style="color: #666; font-size: 0.85rem; margin-top: 5px; display: block;"></small>
                     </div>
 
@@ -600,18 +600,23 @@
                 
                 if (activity.unit === 'hour') {
                     distanceInput.step = '0.25';
-                    distanceInput.placeholder = 'e.g., 1.5';
+                    distanceInput.min = '0.25';
+                    distanceInput.placeholder = 'e.g., 1';
                 } else if (activity.unit === '1000 steps') {
                     distanceInput.step = '1';
+                    distanceInput.min = '1';
                     distanceInput.placeholder = 'e.g., 8 (for 8000 steps)';
                 } else {
                     distanceInput.step = '0.1';
+                    distanceInput.min = '0.1';
                     distanceInput.placeholder = 'e.g., 5.0';
                 }
             } else {
                 distanceLabel.textContent = 'Amount';
                 distanceHint.textContent = '';
                 distanceInput.placeholder = '';
+                distanceInput.step = '0.01';
+                distanceInput.min = '0.01';
             }
         }
 
