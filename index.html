@@ -315,15 +315,15 @@
                 <div class="points-multipliers">
                     <h3>Points Guide:</h3>
                     <div class="multiplier-item"><span>Row</span><span>0.75 per km</span></div>
-                    <div class="multiplier-item"><span>Run</span><span>1.5 per km</span></div>
-                    <div class="multiplier-item"><span>Swim</span><span>4 per km</span></div>
-                    <div class="multiplier-item"><span>Bike</span><span>0.25 per km</span></div>
-                    <div class="multiplier-item"><span>Walk</span><span>0.5 per km</span></div>
+                    <div class="multiplier-item"><span>Run</span><span>1.3 per km, sub 7:00 km</span></div>
+                    <div class="multiplier-item"><span>Swim</span><span>5 per km</span></div>
+                    <div class="multiplier-item"><span>Indoor Bike</span><span>0.3 per km</span></div>
+                    <div class="multiplier-item"><span>Outdoor Bike </span><span>0.5 per km</span></div>
+                    <div class="multiplier-item"><span>Walk</span><span>0.5 per km, 2km min</span></div>
                     <div class="multiplier-item"><span>Stairmaster</span><span>2 per 1000 steps</span></div>
-                    <div class="multiplier-item"><span>Gym/Pilates</span><span>3 per hour</span></div>
-                    <div class="multiplier-item"><span>Tennis/Soccer</span><span>4 per hour</span></div>
-                    <div class="multiplier-item"><span>Basketball Training</span><span>3 per hour</span></div>
-                    <div class="multiplier-item"><span>Basketball Game</span><span>4 per hour</span></div>
+                    <div class="multiplier-item"><span>Social Sport</span><span>2 per hour</span></div>
+                    <div class="multiplier-item"><span>Sports Training</span><span>4 per hour: Tennis, Soccer, Basketball, Gym, Pilates</span></div>
+                    <div class="multiplier-item"><span>Sports Game</span><span>5 per hour: Tennis, Soccer, Basketball, Boxing</span></div>
                 </div>
 
                 <form id="activityForm">
@@ -331,19 +331,19 @@
                         <label for="participantName">Participant</label>
                         <select id="participantName" required>
                             <option value="">Select participant...</option>
-                            <option value="Juliette">Juliette</option>
+                            <option value="Ju Ju">Ju Ju</option>
                             <option value="Bea">Bea</option>
-                            <option value="Jeffrey">Jeffrey</option>
+                            <option value="Lacy">Lacy</option>
                             <option value="Brooke">Brooke</option>
                             <option value="Seb">Seb</option>
                             <option value="Jack">Jack</option>
                             <option value="Cameron">Cameron</option>
-                            <option value="Renee">Renee</option>
-                            <option value="Olivia">Olivia</option>
+                            <option value="Renaigebait">Renaigebait</option>
+                            <option value="Liv">Liv</option>
                             <option value="Sarah">Sarah</option>
                             <option value="Lucy">Lucy</option>
                             <option value="George">George</option>
-                            <option value="Tom">Tom</option>
+                            <option value="Marlon">Marlon</option>
                             <option value="Alec">Alec</option>
                             <option value="Frankie">Frankie</option>
                         </select>
@@ -356,13 +356,13 @@
                             <option value="row">Row</option>
                             <option value="run">Run</option>
                             <option value="swim">Swim</option>
-                            <option value="bike">Bike</option>
+                            <option value="indoor_bike">Indoor Bike</option>
+                            <option value="outdoor_bike">Outdoor Bike</option>
                             <option value="walk">Walk</option>
                             <option value="stairmaster">Stairmaster</option>
-                            <option value="gym">Gym/Pilates</option>
-                            <option value="tennis">Tennis/Soccer</option>
-                            <option value="basketball_training">Basketball Training</option>
-                            <option value="basketball_game">Basketball Game</option>
+                            <option value="social_sport">Social Sport</option>
+                            <option value="sports_training">Sports Training</option>
+                            <option value="sports_game">Sports Game</option>
                         </select>
                     </div>
 
@@ -395,15 +395,15 @@
         // Activity definitions
         const activities = {
             row: { multiplier: 0.75, unit: 'km', label: 'Row' },
-            run: { multiplier: 1.5, unit: 'km', label: 'Run' },
-            swim: { multiplier: 4, unit: 'km', label: 'Swim' },
-            bike: { multiplier: 0.25, unit: 'km', label: 'Bike' },
+            run: { multiplier: 1.3, unit: 'km', label: 'Run' },
+            swim: { multiplier: 5, unit: 'km', label: 'Swim' },
+            indoor_bike: { multiplier: 0.3, unit: 'km', label: 'Indoor Bike' },
+            outdoor_bike: { multiplier: 0.5, unit: 'km', label: 'Outdoor Bike' },
             walk: { multiplier: 0.5, unit: 'km', label: 'Walk' },
             stairmaster: { multiplier: 2, unit: '1000 steps', label: 'Stairmaster' },
-            gym: { multiplier: 3, unit: 'hour', label: 'Gym/Pilates' },
-            tennis: { multiplier: 4, unit: 'hour', label: 'Tennis/Soccer' },
-            basketball_training: { multiplier: 3, unit: 'hour', label: 'Basketball Training' },
-            basketball_game: { multiplier: 4, unit: 'hour', label: 'Basketball Game' }
+            social_sport: { multiplier: 2, unit: 'hour', label: 'Social Sport' }
+            sports_training: { multiplier: 4, unit: 'hour', label: 'Sports Training' }
+            sports_game: { multiplier: 5, unit: 'hour', label: 'Sports Game' }
         };
 
         // Global state
