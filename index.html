@@ -318,12 +318,14 @@
                     <div class="multiplier-item"><span>Run</span><span>1.3 per km, sub 7:00 km</span></div>
                     <div class="multiplier-item"><span>Swim</span><span>5 per km</span></div>
                     <div class="multiplier-item"><span>Indoor Bike</span><span>0.3 per km</span></div>
-                    <div class="multiplier-item"><span>Outdoor Bike </span><span>0.5 per km</span></div>
+                    <div class="multiplier-item"><span>Road Bike </span><span>0.4 per km</span></div>
+                    <div class="multiplier-item"><span>Mountain Bike</span><span>0.7 per km: Anything with suspension and fat tires.</span></div>
                     <div class="multiplier-item"><span>Walk</span><span>0.5 per km, 2km min</span></div>
                     <div class="multiplier-item"><span>Stairmaster</span><span>2 per 1000 steps</span></div>
                     <div class="multiplier-item"><span>Social Sport</span><span>2 per hour</span></div>
                     <div class="multiplier-item"><span>Sports Training</span><span>4 per hour: Tennis, Soccer, Basketball, Gym, Pilates</span></div>
                     <div class="multiplier-item"><span>Sports Game</span><span>5 per hour: Tennis, Soccer, Basketball, Boxing</span></div>
+                    <div class="multiplier-item"><span>Skiing</span><span>1 per hour: Also snowboarding</span></div>
                 </div>
 
                 <form id="activityForm">
@@ -362,12 +364,14 @@
                             <option value="run">Run</option>
                             <option value="swim">Swim</option>
                             <option value="indoor_bike">Indoor Bike</option>
-                            <option value="outdoor_bike">Outdoor Bike</option>
+                            <option value="road_bike">Road Bike</option>
+                            <option value="mountain_bike">Mountain Bike</option>
                             <option value="walk">Walk</option>
                             <option value="stairmaster">Stairmaster</option>
                             <option value="social_sport">Social Sport</option>
                             <option value="sports_training">Sports Training</option>
                             <option value="sports_game">Sports Game</option>
+                            <option value="skiing">Skiing</option>
                         </select>
                     </div>
 
@@ -403,12 +407,14 @@
             run: { multiplier: 1.3, unit: 'km', label: 'Run' },
             swim: { multiplier: 5, unit: 'km', label: 'Swim' },
             indoor_bike: { multiplier: 0.3, unit: 'km', label: 'Indoor Bike' },
-            outdoor_bike: { multiplier: 0.5, unit: 'km', label: 'Outdoor Bike' },
+            road_bike: { multiplier: 0.4, unit: 'km', label: 'Outdoor Bike' },
+            mountain_bike: { multiplier: 0.7, unit: 'km', label: 'Mountain Bike' },
             walk: { multiplier: 0.5, unit: 'km', label: 'Walk' },
             stairmaster: { multiplier: 2, unit: '1000 steps', label: 'Stairmaster' },
             social_sport: { multiplier: 2, unit: 'hour', label: 'Social Sport' },
             sports_training: { multiplier: 4, unit: 'hour', label: 'Sports Training' },
             sports_game: { multiplier: 5, unit: 'hour', label: 'Sports Game' }
+            skiing: { multiplier: 1, unit: 'hour', label: 'Skiing' }
         };
 
         // Global state
