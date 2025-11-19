@@ -11,87 +11,126 @@
             box-sizing: border-box;
         }
 
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1e40af;
+            --secondary: #64748b;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --background: #f8fafc;
+            --surface: #ffffff;
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
+            --border: #e2e8f0;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --radius: 12px;
+            --radius-lg: 16px;
+        }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+            background: var(--background);
+            color: var(--text-primary);
             min-height: 100vh;
-            padding: 20px;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
-            overflow: hidden;
+            padding: 16px;
         }
 
         .header {
-            background: linear-gradient(135deg, #ff6b6b 0%, #ffa500 100%);
-            color: white;
-            padding: 30px;
-            text-align: center;
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
         }
 
-        .header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        .header-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+            letter-spacing: -0.025em;
         }
 
-        .header p {
-            font-size: 1.2rem;
-            opacity: 0.9;
+        .header-subtitle {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            font-weight: 400;
         }
 
         .connection-status {
-            padding: 15px;
-            margin: 20px;
-            border-radius: 10px;
-            text-align: center;
-            font-weight: 600;
+            padding: 12px 16px;
+            margin-bottom: 20px;
+            border-radius: var(--radius);
+            font-size: 0.875rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid;
         }
 
         .connection-status.connecting {
-            background: #fff3cd;
-            color: #856404;
-            border: 2px solid #ffeaa7;
+            background: #fef3c7;
+            color: #92400e;
+            border-color: #fde68a;
         }
 
         .connection-status.connected {
-            background: #d4edda;
-            color: #155724;
-            border: 2px solid #c3e6cb;
+            background: #d1fae5;
+            color: #065f46;
+            border-color: #a7f3d0;
         }
 
         .connection-status.error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 2px solid #f5c6cb;
+            background: #fee2e2;
+            color: #991b1b;
+            border-color: #fecaca;
+        }
+
+        .status-icon {
+            width: 16px;
+            height: 16px;
+            display: inline-block;
         }
 
         .main-content {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            padding: 30px;
+            grid-template-columns: 1fr;
+            gap: 20px;
         }
 
         .section {
-            background: #f8f9fa;
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
         }
 
-        .section h2 {
-            color: #333;
-            margin-bottom: 20px;
-            font-size: 1.5rem;
+        .section-header {
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            letter-spacing: -0.025em;
         }
 
         .form-group {
@@ -100,151 +139,260 @@
 
         label {
             display: block;
-            margin-bottom: 5px;
-            font-weight: 600;
-            color: #555;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-primary);
+            font-size: 0.875rem;
         }
 
         input, select {
             width: 100%;
-            padding: 12px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 16px;
-            transition: border-color 0.3s;
+            padding: 12px 14px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            font-size: 1rem;
+            color: var(--text-primary);
+            background: var(--surface);
+            transition: all 0.2s;
+            font-family: inherit;
         }
 
         input:focus, select:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .input-hint {
+            color: var(--text-secondary);
+            font-size: 0.8125rem;
+            margin-top: 6px;
+            display: block;
         }
 
         button {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: var(--primary);
             color: white;
             border: none;
-            padding: 12px 24px;
-            border-radius: 8px;
+            padding: 12px 20px;
+            border-radius: var(--radius);
             cursor: pointer;
-            font-size: 16px;
-            font-weight: 600;
-            transition: transform 0.2s, box-shadow 0.2s;
+            font-size: 0.9375rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            font-family: inherit;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            justify-content: center;
         }
 
         button:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+            background: var(--primary-dark);
+            box-shadow: var(--shadow);
+        }
+
+        button:active:not(:disabled) {
+            transform: scale(0.98);
         }
 
         button:disabled {
-            background: #ccc;
+            background: var(--secondary);
+            opacity: 0.5;
             cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
         }
 
-        .leaderboard {
-            grid-column: span 2;
+        .btn-refresh {
+            background: transparent;
+            color: var(--text-secondary);
+            padding: 8px 14px;
+            font-size: 0.875rem;
+            border: 1px solid var(--border);
+        }
+
+        .btn-refresh:hover:not(:disabled) {
+            background: var(--background);
+            color: var(--text-primary);
+            border-color: var(--text-secondary);
+        }
+
+        .btn-primary {
+            width: 100%;
+        }
+
+        .last-updated {
+            font-size: 0.8125rem;
+            color: var(--text-secondary);
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .leaderboard-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
         }
 
         .leaderboard-item {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            background: white;
-            padding: 15px 20px;
-            margin-bottom: 10px;
-            border-radius: 10px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            transition: transform 0.2s;
+            gap: 16px;
+            padding: 16px;
+            background: var(--background);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            transition: all 0.2s;
         }
 
         .leaderboard-item:hover {
-            transform: translateX(5px);
+            border-color: var(--primary);
+            box-shadow: var(--shadow-sm);
         }
 
         .rank {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #667eea;
-            min-width: 40px;
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            min-width: 36px;
+            text-align: center;
         }
 
-        .rank.gold { color: #ffd700; }
-        .rank.silver { color: #c0c0c0; }
-        .rank.bronze { color: #cd7f32; }
+        .rank.medal {
+            font-size: 1.5rem;
+        }
+
+        .participant-info {
+            flex: 1;
+            min-width: 0;
+        }
 
         .participant-name {
-            flex-grow: 1;
-            margin-left: 15px;
-            font-size: 1.2rem;
+            font-size: 1rem;
             font-weight: 600;
+            color: var(--text-primary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .points {
-            font-size: 1.3rem;
-            font-weight: bold;
-            color: #ff6b6b;
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: var(--primary);
+            white-space: nowrap;
+        }
+
+        .points-unit {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text-secondary);
         }
 
         .activity-log {
-            grid-column: span 2;
-            max-height: 400px;
+            max-height: 500px;
             overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .activity-log::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .activity-log::-webkit-scrollbar-track {
+            background: var(--background);
+            border-radius: 3px;
+        }
+
+        .activity-log::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 3px;
+        }
+
+        .activity-log::-webkit-scrollbar-thumb:hover {
+            background: var(--secondary);
         }
 
         .activity-item {
-            background: white;
-            padding: 15px;
-            margin-bottom: 10px;
-            border-radius: 8px;
-            border-left: 4px solid #667eea;
+            padding: 14px 16px;
+            background: var(--background);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
         }
 
         .activity-header {
             font-weight: 600;
-            color: #333;
-            margin-bottom: 5px;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+            font-size: 0.9375rem;
         }
 
         .activity-details {
-            color: #666;
-            font-size: 0.9rem;
+            color: var(--text-secondary);
+            font-size: 0.8125rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
         }
 
-        .points-multipliers {
-            background: #e8f4f8;
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 20px;
+        .activity-detail-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
         }
 
-        .multiplier-item {
+        .activity-separator {
+            color: var(--border);
+        }
+
+        .points-guide {
+            background: var(--background);
+            border-radius: var(--radius);
+            padding: 16px;
+            margin-bottom: 24px;
+            border: 1px solid var(--border);
+        }
+
+        .points-guide-title {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+        }
+
+        .points-guide-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 6px;
+            font-size: 0.8125rem;
+        }
+
+        .points-guide-item {
             display: flex;
             justify-content: space-between;
-            padding: 5px 0;
-            font-size: 0.9rem;
+            padding: 6px 0;
+            color: var(--text-secondary);
+        }
+
+        .points-guide-activity {
+            font-weight: 500;
+            color: var(--text-primary);
         }
 
         .empty-state {
             text-align: center;
-            color: #999;
-            padding: 40px;
-            font-style: italic;
+            color: var(--text-secondary);
+            padding: 48px 24px;
+            font-size: 0.9375rem;
         }
 
-        .refresh-btn {
-            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-            font-size: 14px;
-            padding: 8px 16px;
-            margin-left: auto;
-        }
-
-        .last-updated {
-            font-size: 0.85rem;
-            color: #666;
+        .auto-refresh-note {
+            font-size: 0.8125rem;
+            color: var(--text-secondary);
             text-align: center;
-            margin-bottom: 15px;
+            margin-top: 12px;
         }
 
         .loading {
@@ -252,27 +400,49 @@
             pointer-events: none;
         }
 
-        .auto-refresh {
-            font-size: 0.8rem;
-            color: #666;
-            text-align: center;
-            margin-top: 10px;
-            font-style: italic;
+        @media (min-width: 768px) {
+            .container {
+                padding: 24px;
+            }
+
+            .header {
+                padding: 32px;
+                margin-bottom: 24px;
+            }
+
+            .header-title {
+                font-size: 2rem;
+            }
+
+            .main-content {
+                grid-template-columns: 2fr 1fr;
+                gap: 24px;
+            }
+
+            .leaderboard-section {
+                grid-row: 1 / 3;
+            }
+
+            .points-guide-grid {
+                grid-template-columns: 1fr 1fr;
+            }
         }
 
-        @media (max-width: 768px) {
-            .main-content {
-                grid-template-columns: 1fr;
-                gap: 20px;
+        @media (max-width: 767px) {
+            .activity-details {
+                font-size: 0.75rem;
+            }
+
+            .participant-name {
+                font-size: 0.9375rem;
+            }
+
+            .points {
+                font-size: 1rem;
+            }
+
+            .section {
                 padding: 20px;
-            }
-            
-            .leaderboard, .activity-log {
-                grid-column: span 1;
-            }
-            
-            .header h1 {
-                font-size: 2rem;
             }
         }
     </style>
@@ -280,52 +450,94 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🏃‍♂️ Fitness Challenge Dashboard</h1>
-            <p>Track your activities and compete with friends!</p>
+            <h1 class="header-title">Fitness Challenge Dashboard</h1>
+            <p class="header-subtitle">Track activities and compete with your team</p>
         </div>
 
         <div id="connectionStatus" class="connection-status connecting">
-            🔄 Connecting to Google Sheets...
+            <span class="status-icon">⏳</span>
+            <span>Connecting to data source...</span>
         </div>
 
         <div class="main-content">
             <!-- Leaderboard Section -->
-            <div class="section leaderboard">
-                <h2>
-                    🏆 Leaderboard
-                    <button class="refresh-btn" onclick="refreshData()">🔄 Refresh</button>
-                </h2>
+            <div class="section leaderboard-section">
+                <div class="section-header">
+                    <h2 class="section-title">Leaderboard</h2>
+                    <button class="btn-refresh" onclick="refreshData()">
+                        <span>↻</span>
+                        <span>Refresh</span>
+                    </button>
+                </div>
                 <div class="last-updated" id="lastUpdated">
                     Last updated: Loading...
                 </div>
-                <div id="leaderboardContent">
+                <div class="leaderboard-list" id="leaderboardContent">
                     <div class="empty-state">
                         Loading leaderboard...
                     </div>
                 </div>
-                <div class="auto-refresh">
+                <div class="auto-refresh-note">
                     Auto-refreshes every 30 seconds
                 </div>
             </div>
 
             <!-- Add Activity Section -->
             <div class="section">
-                <h2>📝 Add Activity</h2>
+                <h2 class="section-title">Add Activity</h2>
                 
-                <div class="points-multipliers">
-                    <h3>Points Guide:</h3>
-                    <div class="multiplier-item"><span>Row</span><span>0.75 per km</span></div>
-                    <div class="multiplier-item"><span>Run</span><span>1.3 per km, sub 7:00 km</span></div>
-                    <div class="multiplier-item"><span>Swim</span><span>5 per km</span></div>
-                    <div class="multiplier-item"><span>Indoor Bike</span><span>0.3 per km</span></div>
-                    <div class="multiplier-item"><span>Road Bike </span><span>0.4 per km</span></div>
-                    <div class="multiplier-item"><span>Mountain Bike</span><span>0.7 per km: Anything with suspension and fat tires.</span></div>
-                    <div class="multiplier-item"><span>Walk</span><span>0.5 per km, 2km min</span></div>
-                    <div class="multiplier-item"><span>Stairmaster</span><span>2 per 1000 steps</span></div>
-                    <div class="multiplier-item"><span>Social Sport</span><span>2 per hour</span></div>
-                    <div class="multiplier-item"><span>Sports Training</span><span>4 per hour: Tennis, Soccer, Basketball, Gym, Pilates</span></div>
-                    <div class="multiplier-item"><span>Sports Game</span><span>5 per hour: Tennis, Soccer, Basketball, Boxing</span></div>
-                    <div class="multiplier-item"><span>Skiing</span><span>1 per hour: Also snowboarding</span></div>
+                <div class="points-guide">
+                    <h3 class="points-guide-title">Points Reference</h3>
+                    <div class="points-guide-grid">
+                        <div class="points-guide-item">
+                            <span class="points-guide-activity">Row</span>
+                            <span>0.75 per km</span>
+                        </div>
+                        <div class="points-guide-item">
+                            <span class="points-guide-activity">Run</span>
+                            <span>1.3 per km</span>
+                        </div>
+                        <div class="points-guide-item">
+                            <span class="points-guide-activity">Swim</span>
+                            <span>5 per km</span>
+                        </div>
+                        <div class="points-guide-item">
+                            <span class="points-guide-activity">Indoor Bike</span>
+                            <span>0.3 per km</span>
+                        </div>
+                        <div class="points-guide-item">
+                            <span class="points-guide-activity">Road Bike</span>
+                            <span>0.4 per km</span>
+                        </div>
+                        <div class="points-guide-item">
+                            <span class="points-guide-activity">Mountain Bike</span>
+                            <span>0.7 per km</span>
+                        </div>
+                        <div class="points-guide-item">
+                            <span class="points-guide-activity">Walk</span>
+                            <span>0.5 per km</span>
+                        </div>
+                        <div class="points-guide-item">
+                            <span class="points-guide-activity">Stairmaster</span>
+                            <span>2 per 1000 steps</span>
+                        </div>
+                        <div class="points-guide-item">
+                            <span class="points-guide-activity">Social Sport</span>
+                            <span>2 per hour</span>
+                        </div>
+                        <div class="points-guide-item">
+                            <span class="points-guide-activity">Sports Training</span>
+                            <span>4 per hour</span>
+                        </div>
+                        <div class="points-guide-item">
+                            <span class="points-guide-activity">Sports Game</span>
+                            <span>5 per hour</span>
+                        </div>
+                        <div class="points-guide-item">
+                            <span class="points-guide-activity">Skiing</span>
+                            <span>1 per hour</span>
+                        </div>
+                    </div>
                 </div>
 
                 <form id="activityForm">
@@ -348,11 +560,11 @@
                             <option value="Marlon">Marlon</option>
                             <option value="Alec">Alec</option>
                             <option value="Frankie">Frankie</option>
-                            <option value="Chloe">Chloe</option>option>
-                            <option value="Coomagoo222">Coomagoo222</option>option>
-                            <option value="Lara">Lara</option>option>
-                            <option value="Will">Will</option>option>
-                            <option value="Marco">Marco</option>option>
+                            <option value="Chloe">Chloe</option>
+                            <option value="Coomagoo222">Coomagoo222</option>
+                            <option value="Lara">Lara</option>
+                            <option value="Will">Will</option>
+                            <option value="Marco">Marco</option>
                         </select>
                     </div>
 
@@ -378,17 +590,17 @@
                     <div class="form-group">
                         <label for="distance" id="distanceLabel">Amount</label>
                         <input type="number" id="distance" step="0.01" min="0.01" required>
-                        <small id="distanceHint" style="color: #666; font-size: 0.85rem; margin-top: 5px; display: block;"></small>
+                        <small id="distanceHint" class="input-hint"></small>
                     </div>
 
-                    <button type="submit" id="submitBtn">Add Activity</button>
+                    <button type="submit" id="submitBtn" class="btn-primary">Add Activity</button>
                 </form>
             </div>
 
             <!-- Recent Activities Section -->
-            <div class="section activity-log">
-                <h2>📊 Recent Activities</h2>
-                <div id="activityLogContent">
+            <div class="section">
+                <h2 class="section-title">Recent Activities</h2>
+                <div class="activity-log" id="activityLogContent">
                     <div class="empty-state">
                         Loading activities...
                     </div>
@@ -413,7 +625,7 @@
             stairmaster: { multiplier: 2, unit: '1000 steps', label: 'Stairmaster' },
             social_sport: { multiplier: 2, unit: 'hour', label: 'Social Sport' },
             sports_training: { multiplier: 4, unit: 'hour', label: 'Sports Training' },
-            sports_game: { multiplier: 5, unit: 'hour', label: 'Sports Game' }
+            sports_game: { multiplier: 5, unit: 'hour', label: 'Sports Game' },
             skiing: { multiplier: 1, unit: 'hour', label: 'Skiing' }
         };
 
@@ -429,15 +641,15 @@
             statusElement.className = `connection-status ${status}`;
             
             const icons = {
-                connecting: '🔄',
-                connected: '✅',
-                error: '❌'
+                connecting: '⏳',
+                connected: '✓',
+                error: '✕'
             };
             
-            statusElement.innerHTML = `${icons[status]} ${message}`;
+            statusElement.innerHTML = `<span class="status-icon">${icons[status]}</span><span>${message}</span>`;
         }
 
-        // API call helper - FIXED VERSION
+        // API call helper
         async function callAPI(action, data = {}) {
             try {
                 console.log('Calling API with action:', action, 'data:', data);
@@ -445,14 +657,13 @@
                 const url = `${API_URL}?action=${action}`;
                 
                 const options = {
-                    method: 'GET', // Default to GET
+                    method: 'GET',
                     mode: 'cors',
                     headers: {
                         'Content-Type': 'application/json',
                     }
                 };
 
-                // Only use POST if we have data to send
                 if (data && Object.keys(data).length > 0) {
                     options.method = 'POST';
                     options.body = JSON.stringify({ action, ...data });
@@ -494,7 +705,7 @@
                     
                     if (!isConnected) {
                         isConnected = true;
-                        updateConnectionStatus('connected', 'Connected to Google Sheets! Data syncs in real-time.');
+                        updateConnectionStatus('connected', 'Connected successfully');
                         startAutoRefresh();
                     }
                 } else {
@@ -523,7 +734,6 @@
                 }
             } catch (error) {
                 console.error('Error loading activities:', error);
-                // Don't show error for activities if leaderboard works
                 if (!isConnected) {
                     updateConnectionStatus('error', 'Connection failed: ' + error.message);
                 }
@@ -552,7 +762,6 @@
                 
                 if (result.success) {
                     console.log('Activity saved successfully');
-                    // Refresh data to show the new activity
                     await refreshData();
                     return true;
                 } else {
@@ -597,7 +806,7 @@
         // Start auto-refresh
         function startAutoRefresh() {
             if (autoRefreshInterval) clearInterval(autoRefreshInterval);
-            autoRefreshInterval = setInterval(refreshData, 30000); // 30 seconds
+            autoRefreshInterval = setInterval(refreshData, 30000);
             console.log('Auto-refresh started');
         }
 
@@ -646,32 +855,34 @@
             console.log('Sorted participants:', sortedParticipants);
 
             if (sortedParticipants.length === 0) {
-                leaderboardContent.innerHTML = '<div class="empty-state">No activities recorded yet. Add some activities to see the leaderboard!</div>';
+                leaderboardContent.innerHTML = '<div class="empty-state">No activities recorded yet. Add activities to populate the leaderboard.</div>';
                 return;
             }
 
             let html = '';
             sortedParticipants.forEach(([name, data], index) => {
                 const rank = index + 1;
-                let rankClass = '';
                 let rankDisplay = `#${rank}`;
+                let rankClass = '';
                 
                 if (rank === 1 && data.totalPoints > 0) {
-                    rankClass = 'gold';
                     rankDisplay = '🥇';
+                    rankClass = 'medal';
                 } else if (rank === 2 && data.totalPoints > 0) {
-                    rankClass = 'silver';
                     rankDisplay = '🥈';
+                    rankClass = 'medal';
                 } else if (rank === 3 && data.totalPoints > 0) {
-                    rankClass = 'bronze';
                     rankDisplay = '🥉';
+                    rankClass = 'medal';
                 }
 
                 html += `
                     <div class="leaderboard-item">
                         <div class="rank ${rankClass}">${rankDisplay}</div>
-                        <div class="participant-name">${name}</div>
-                        <div class="points">${data.totalPoints.toFixed(1)} pts</div>
+                        <div class="participant-info">
+                            <div class="participant-name">${name}</div>
+                        </div>
+                        <div class="points">${data.totalPoints.toFixed(1)} <span class="points-unit">pts</span></div>
                     </div>
                 `;
             });
@@ -685,22 +896,26 @@
             const activityLogContent = document.getElementById('activityLogContent');
             
             if (!activities_log || activities_log.length === 0) {
-                activityLogContent.innerHTML = '<div class="empty-state">No activities logged yet. Add an activity above to get started!</div>';
+                activityLogContent.innerHTML = '<div class="empty-state">No activities logged yet.</div>';
                 return;
             }
 
             let html = '';
             activities_log.slice(0, 20).forEach(activity => {
                 const date = new Date(activity.timestamp).toLocaleDateString();
-                const time = new Date(activity.timestamp).toLocaleTimeString();
+                const time = new Date(activity.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
                 
                 html += `
                     <div class="activity-item">
                         <div class="activity-header">
-                            ${activity.participant} - ${activity.activity}
+                            ${activity.participant} · ${activity.activity}
                         </div>
                         <div class="activity-details">
-                            ${activity.amount} ${activity.unit} • ${parseFloat(activity.points).toFixed(1)} points • ${date} ${time}
+                            <span class="activity-detail-item">${activity.amount} ${activity.unit}</span>
+                            <span class="activity-separator">·</span>
+                            <span class="activity-detail-item">${parseFloat(activity.points).toFixed(1)} pts</span>
+                            <span class="activity-separator">·</span>
+                            <span class="activity-detail-item">${date} ${time}</span>
                         </div>
                     </div>
                 `;
@@ -732,7 +947,6 @@
             const success = await saveActivity(participant, activityType, amount);
             
             if (success) {
-                // Clear form except participant
                 document.getElementById('activityType').value = '';
                 document.getElementById('distance').value = '';
                 updateDistanceLabel();
@@ -749,11 +963,11 @@
         // Initialize on page load
         document.addEventListener('DOMContentLoaded', function() {
             console.log('Page loaded, initializing...');
-            updateConnectionStatus('connecting', 'Connecting to Google Sheets...');
+            updateConnectionStatus('connecting', 'Connecting to data source...');
             refreshData();
         });
 
-        // Handle page visibility change (refresh when tab becomes visible)
+        // Handle page visibility change
         document.addEventListener('visibilitychange', function() {
             if (!document.hidden && isConnected) {
                 console.log('Page became visible, refreshing data...');
