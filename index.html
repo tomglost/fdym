@@ -367,32 +367,37 @@
 
         .podium-place.first {
             order: 0;
+            align-self: flex-start;
         }
 
         .podium-place.first .podium-card {
             background: #fef3c7;
             border-color: var(--gold);
-            min-height: 200px;
+            height: 220px;
         }
 
         .podium-place.second {
             order: -1;
+            align-self: flex-start;
+            margin-top: 30px;
         }
 
         .podium-place.second .podium-card {
             background: #f1f5f9;
             border-color: var(--silver);
-            min-height: 160px;
+            height: 190px;
         }
 
         .podium-place.third {
             order: 1;
+            align-self: flex-start;
+            margin-top: 50px;
         }
 
         .podium-place.third .podium-card {
             background: #fed7aa;
             border-color: var(--bronze);
-            min-height: 130px;
+            height: 170px;
         }
 
         .podium-medal {
@@ -742,6 +747,43 @@
             padding: 24px;
         }
 
+        .stats-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .stats-tab-button {
+            background: transparent;
+            border: none;
+            padding: 12px 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+            transition: all 0.2s;
+        }
+
+        .stats-tab-button:hover {
+            color: var(--text-primary);
+        }
+
+        .stats-tab-button.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .stats-tab-content {
+            display: none;
+        }
+
+        .stats-tab-content.active {
+            display: block;
+        }
+
         .stat-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -798,6 +840,58 @@
         .activity-breakdown-count {
             color: var(--text-secondary);
             font-size: 0.875rem;
+        }
+
+        .progress-chart {
+            margin-top: 20px;
+        }
+
+        .chart-bar-container {
+            display: flex;
+            align-items: flex-end;
+            gap: 8px;
+            height: 200px;
+            padding: 10px 0;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .chart-bar-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .chart-bar {
+            width: 100%;
+            background: linear-gradient(180deg, var(--primary) 0%, var(--primary-light) 100%);
+            border-radius: 8px 8px 0 0;
+            transition: all 0.3s;
+            position: relative;
+            min-height: 4px;
+        }
+
+        .chart-bar:hover {
+            background: linear-gradient(180deg, #4f46e5 0%, var(--primary) 100%);
+        }
+
+        .chart-bar-value {
+            position: absolute;
+            top: -24px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            white-space: nowrap;
+        }
+
+        .chart-bar-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            text-align: center;
+            word-break: break-word;
         }
 
         @media (min-width: 768px) {
@@ -1204,28 +1298,41 @@
             countdownInterval = setInterval(updateCountdown, 1000);
         }
 
-        // Calculate streak
+        // Calculate streak (with backfilling)
         function calculateStreak(participantName) {
             const userActivities = activities_log
                 .filter(a => a.participant === participantName)
-                .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+                .map(a => {
+                    const date = new Date(a.timestamp);
+                    date.setHours(0, 0, 0, 0);
+                    return date.getTime();
+                })
+                .filter((value, index, self) => self.indexOf(value) === index) // Remove duplicates (same day)
+                .sort((a, b) => b - a); // Sort descending
 
             if (userActivities.length === 0) return 0;
 
+            let streak = 1;
             const today = new Date();
             today.setHours(0, 0, 0, 0);
-            
-            let streak = 0;
-            let currentDate = new Date(today);
+            const todayTime = today.getTime();
 
-            for (let activity of userActivities) {
-                const activityDate = new Date(activity.timestamp);
-                activityDate.setHours(0, 0, 0, 0);
+            // Check if most recent activity is today or yesterday
+            const mostRecent = userActivities[0];
+            const daysSinceLastActivity = Math.floor((todayTime - mostRecent) / (1000 * 60 * 60 * 24));
+            
+            if (daysSinceLastActivity > 1) {
+                // Streak is broken if last activity was more than 1 day ago
+                return 0;
+            }
+
+            // Count consecutive days going backwards
+            for (let i = 1; i < userActivities.length; i++) {
+                const dayDiff = Math.floor((userActivities[i - 1] - userActivities[i]) / (1000 * 60 * 60 * 24));
                 
-                if (activityDate.getTime() === currentDate.getTime()) {
+                if (dayDiff === 1) {
                     streak++;
-                    currentDate.setDate(currentDate.getDate() - 1);
-                } else if (activityDate < currentDate) {
+                } else if (dayDiff > 1) {
                     break;
                 }
             }
@@ -1453,9 +1560,7 @@
 
         // Refresh all data
         async function refreshData() {
-            const container = document.querySelector('.container');
-            container.classList.add('loading');
-            
+            // Don't show loading state to allow continued interaction
             try {
                 await Promise.all([
                     loadLeaderboard(),
@@ -1464,8 +1569,6 @@
                 updateLastUpdated();
             } catch (error) {
                 console.error('Error refreshing data:', error);
-            } finally {
-                container.classList.remove('loading');
             }
         }
 
@@ -1681,6 +1784,11 @@
             document.getElementById('modalParticipantName').textContent = `${participantName}'s Stats`;
             document.getElementById('personalStatsModal').classList.add('active');
             
+            renderPersonalStats(participantName, 'overview');
+        }
+
+        // Render personal stats content
+        function renderPersonalStats(participantName, activeTab) {
             const userActivities = activities_log.filter(a => a.participant === participantName);
             const totalPoints = participants[participantName]?.totalPoints || 0;
             const totalActivities = userActivities.length;
@@ -1700,7 +1808,6 @@
                 .sort(([,a], [,b]) => b.count - a.count);
 
             const favoriteActivity = sortedActivities[0]?.[0] || 'None';
-            const avgPointsPerDay = totalActivities > 0 ? (totalPoints / Math.max(1, streak)).toFixed(1) : '0';
 
             let modalContent = `
                 <div class="stat-grid">
@@ -1722,8 +1829,14 @@
                     </div>
                 </div>
 
-                <div class="chart-container">
-                    <h3 class="chart-title">Activity Breakdown</h3>
+                <div class="stats-tabs">
+                    <button class="stats-tab-button ${activeTab === 'overview' ? 'active' : ''}" onclick="renderPersonalStats('${participantName}', 'overview')">Breakdown</button>
+                    <button class="stats-tab-button ${activeTab === 'progress' ? 'active' : ''}" onclick="renderPersonalStats('${participantName}', 'progress')">Progress</button>
+                </div>
+
+                <div class="stats-tab-content ${activeTab === 'overview' ? 'active' : ''}">
+                    <div class="chart-container">
+                        <h3 class="chart-title">Activity Breakdown</h3>
             `;
 
             if (sortedActivities.length > 0) {
@@ -1742,7 +1855,78 @@
                 modalContent += '<div class="empty-state">No activities yet</div>';
             }
 
-            modalContent += '</div>';
+            modalContent += `
+                    </div>
+                </div>
+
+                <div class="stats-tab-content ${activeTab === 'progress' ? 'active' : ''}">
+                    <div class="chart-container">
+                        <h3 class="chart-title">Points by Activity Type</h3>
+                        <div class="chart-bar-container">
+            `;
+
+            if (sortedActivities.length > 0) {
+                const maxPoints = Math.max(...sortedActivities.map(([, data]) => data.points));
+                
+                sortedActivities.slice(0, 8).forEach(([activity, data]) => {
+                    const heightPercent = (data.points / maxPoints) * 100;
+                    modalContent += `
+                        <div class="chart-bar-wrapper">
+                            <div class="chart-bar" style="height: ${heightPercent}%">
+                                <div class="chart-bar-value">${data.points.toFixed(0)}</div>
+                            </div>
+                            <div class="chart-bar-label">${activity}</div>
+                        </div>
+                    `;
+                });
+            } else {
+                modalContent += '<div class="empty-state">No activities yet</div>';
+            }
+
+            modalContent += `
+                        </div>
+                    </div>
+
+                    <div class="chart-container">
+                        <h3 class="chart-title">Daily Activity Count</h3>
+                        <div class="chart-bar-container">
+            `;
+
+            // Daily activity chart
+            const dailyActivity = {};
+            userActivities.forEach(a => {
+                const date = new Date(a.timestamp).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                if (!dailyActivity[date]) {
+                    dailyActivity[date] = 0;
+                }
+                dailyActivity[date]++;
+            });
+
+            const dailyEntries = Object.entries(dailyActivity).slice(-7); // Last 7 days with activity
+            
+            if (dailyEntries.length > 0) {
+                const maxDaily = Math.max(...dailyEntries.map(([, count]) => count));
+                
+                dailyEntries.forEach(([date, count]) => {
+                    const heightPercent = (count / maxDaily) * 100;
+                    modalContent += `
+                        <div class="chart-bar-wrapper">
+                            <div class="chart-bar" style="height: ${heightPercent}%">
+                                <div class="chart-bar-value">${count}</div>
+                            </div>
+                            <div class="chart-bar-label">${date}</div>
+                        </div>
+                    `;
+                });
+            } else {
+                modalContent += '<div class="empty-state">No activities yet</div>';
+            }
+
+            modalContent += `
+                        </div>
+                    </div>
+                </div>
+            `;
 
             document.getElementById('modalContent').innerHTML = modalContent;
         }
