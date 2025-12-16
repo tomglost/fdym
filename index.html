@@ -73,6 +73,62 @@
             font-weight: 400;
         }
 
+        /* Countdown Timer */
+        .countdown-container {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-lg);
+            color: white;
+            text-align: center;
+        }
+
+        .countdown-title {
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 12px;
+            opacity: 0.9;
+        }
+
+        .countdown-display {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .countdown-unit {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .countdown-value {
+            font-size: 2rem;
+            font-weight: 700;
+            line-height: 1;
+            margin-bottom: 4px;
+        }
+
+        .countdown-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            opacity: 0.8;
+            letter-spacing: 0.05em;
+        }
+
+        .countdown-expired {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        }
+
+        .countdown-expired-message {
+            font-size: 1.125rem;
+            font-weight: 600;
+        }
+
         .connection-status {
             padding: 12px 16px;
             margin-bottom: 20px;
@@ -137,6 +193,36 @@
             letter-spacing: -0.025em;
         }
 
+        /* Leaderboard Tabs */
+        .leaderboard-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .tab-button {
+            background: transparent;
+            border: none;
+            padding: 12px 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+            transition: all 0.2s;
+        }
+
+        .tab-button:hover {
+            color: var(--text-primary);
+        }
+
+        .tab-button.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
         .form-group {
             margin-bottom: 20px;
         }
@@ -165,6 +251,12 @@
             outline: none;
             border-color: var(--primary);
             box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        input:disabled, select:disabled {
+            background: var(--background);
+            cursor: not-allowed;
+            opacity: 0.6;
         }
 
         .input-hint {
@@ -220,6 +312,14 @@
             border-color: var(--text-secondary);
         }
 
+        .btn-danger {
+            background: var(--danger);
+        }
+
+        .btn-danger:hover:not(:disabled) {
+            background: #dc2626;
+        }
+
         .btn-primary {
             width: 100%;
         }
@@ -248,6 +348,7 @@
             flex-direction: column;
             align-items: center;
             text-align: center;
+            position: relative;
         }
 
         .podium-card {
@@ -257,16 +358,21 @@
             position: relative;
             border: 2px solid;
             transition: transform 0.2s;
+            cursor: pointer;
         }
 
         .podium-card:hover {
             transform: translateY(-4px);
         }
 
+        .podium-place.first {
+            order: 0;
+        }
+
         .podium-place.first .podium-card {
             background: #fef3c7;
             border-color: var(--gold);
-            min-height: 180px;
+            min-height: 200px;
         }
 
         .podium-place.second {
@@ -279,10 +385,14 @@
             min-height: 160px;
         }
 
+        .podium-place.third {
+            order: 1;
+        }
+
         .podium-place.third .podium-card {
             background: #fed7aa;
             border-color: var(--bronze);
-            min-height: 140px;
+            min-height: 130px;
         }
 
         .podium-medal {
@@ -307,6 +417,16 @@
         .podium-activities {
             font-size: 0.75rem;
             color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .podium-streak {
+            font-size: 0.875rem;
+            margin-top: 6px;
+        }
+
+        .podium-movement {
+            margin-top: 8px;
         }
 
         /* Regular Leaderboard List */
@@ -325,6 +445,7 @@
             border-radius: var(--radius);
             border: 1px solid var(--border);
             transition: all 0.2s;
+            cursor: pointer;
         }
 
         .leaderboard-item:hover {
@@ -357,6 +478,11 @@
         .participant-activities {
             font-size: 0.75rem;
             color: var(--text-secondary);
+            margin-top: 2px;
+        }
+
+        .participant-streak {
+            font-size: 0.75rem;
             margin-top: 2px;
         }
 
@@ -432,6 +558,11 @@
             background: var(--background);
             border-radius: var(--radius);
             border: 1px solid var(--border);
+            position: relative;
+        }
+
+        .activity-item.can-undo {
+            border-left: 3px solid var(--danger);
         }
 
         .activity-header {
@@ -439,6 +570,24 @@
             color: var(--text-primary);
             margin-bottom: 4px;
             font-size: 0.9375rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .undo-button {
+            background: var(--danger);
+            color: white;
+            border: none;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .undo-button:hover {
+            background: #dc2626;
         }
 
         .activity-details {
@@ -513,6 +662,144 @@
             pointer-events: none;
         }
 
+        /* Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+
+        .modal {
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-lg);
+            animation: modalSlideIn 0.3s ease-out;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            padding: 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .modal-close {
+            background: transparent;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+        }
+
+        .modal-close:hover {
+            background: var(--background);
+            color: var(--text-primary);
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: var(--background);
+            border-radius: var(--radius);
+            padding: 16px;
+            border: 1px solid var(--border);
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .chart-container {
+            margin-bottom: 24px;
+        }
+
+        .chart-title {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+        }
+
+        .activity-breakdown-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px;
+            background: var(--background);
+            border-radius: var(--radius);
+            margin-bottom: 8px;
+        }
+
+        .activity-breakdown-name {
+            font-weight: 500;
+        }
+
+        .activity-breakdown-count {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
         @media (min-width: 768px) {
             .container {
                 padding: 24px;
@@ -547,6 +834,10 @@
             .podium-place {
                 max-width: 160px;
             }
+
+            .countdown-value {
+                font-size: 2.5rem;
+            }
         }
 
         @media (max-width: 767px) {
@@ -580,11 +871,11 @@
             }
 
             .podium-place.first .podium-card {
-                min-height: 140px;
+                min-height: 160px;
             }
 
             .podium-place.second .podium-card {
-                min-height: 120px;
+                min-height: 130px;
             }
 
             .podium-place.third .podium-card {
@@ -602,6 +893,18 @@
             .podium-points {
                 font-size: 1rem;
             }
+
+            .countdown-value {
+                font-size: 1.5rem;
+            }
+
+            .countdown-display {
+                gap: 12px;
+            }
+
+            .stat-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -610,6 +913,12 @@
         <div class="header">
             <h1 class="header-title">Fitness Challenge Dashboard</h1>
             <p class="header-subtitle">BSB 732054 Acct 740331</p>
+        </div>
+
+        <!-- Countdown Timer -->
+        <div id="countdownContainer" class="countdown-container">
+            <div class="countdown-title">Challenge Ends In</div>
+            <div id="countdownDisplay" class="countdown-display"></div>
         </div>
 
         <div id="connectionStatus" class="connection-status connecting">
@@ -627,6 +936,13 @@
                         <span>Refresh</span>
                     </button>
                 </div>
+
+                <!-- Leaderboard Tabs -->
+                <div class="leaderboard-tabs">
+                    <button class="tab-button active" onclick="switchTab('overall')">Overall</button>
+                    <button class="tab-button" onclick="switchTab('weekly')">This Week</button>
+                </div>
+
                 <div class="last-updated" id="lastUpdated">
                     Last updated: Loading...
                 </div>
@@ -767,8 +1083,23 @@
         </div>
     </div>
 
+    <!-- Personal Stats Modal -->
+    <div class="modal-overlay" id="personalStatsModal" onclick="closeModalOnOverlay(event)">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modalParticipantName">Personal Stats</h2>
+                <button class="modal-close" onclick="closePersonalStats()">×</button>
+            </div>
+            <div class="modal-body" id="modalContent">
+                Loading...
+            </div>
+        </div>
+    </div>
+
     <script>
-        // Configuration
+        // Configuration - CHANGE THIS DATE FOR NEXT RESET
+        const RESET_DATE = new Date('2026-02-16T00:00:00');
+        
         const API_URL = 'https://worker1.tomgloster-aus.workers.dev/';
 
         // Last month's final placings - UPDATE THESE EACH MONTH
@@ -816,6 +1147,127 @@
         let activities_log = [];
         let isConnected = false;
         let autoRefreshInterval;
+        let countdownInterval;
+        let challengeExpired = false;
+        let currentTab = 'overall';
+
+        // Countdown timer
+        function updateCountdown() {
+            const now = new Date();
+            const diff = RESET_DATE - now;
+
+            if (diff <= 0) {
+                challengeExpired = true;
+                document.getElementById('countdownContainer').className = 'countdown-container countdown-expired';
+                document.getElementById('countdownDisplay').innerHTML = '<div class="countdown-expired-message">🔒 Challenge period has ended. Update reset date to continue.</div>';
+                
+                // Disable form
+                document.getElementById('participantName').disabled = true;
+                document.getElementById('activityType').disabled = true;
+                document.getElementById('distance').disabled = true;
+                document.getElementById('submitBtn').disabled = true;
+                
+                if (countdownInterval) clearInterval(countdownInterval);
+                return;
+            }
+
+            challengeExpired = false;
+            
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+            document.getElementById('countdownDisplay').innerHTML = `
+                <div class="countdown-unit">
+                    <div class="countdown-value">${days}</div>
+                    <div class="countdown-label">Days</div>
+                </div>
+                <div class="countdown-unit">
+                    <div class="countdown-value">${hours}</div>
+                    <div class="countdown-label">Hours</div>
+                </div>
+                <div class="countdown-unit">
+                    <div class="countdown-value">${minutes}</div>
+                    <div class="countdown-label">Minutes</div>
+                </div>
+                <div class="countdown-unit">
+                    <div class="countdown-value">${seconds}</div>
+                    <div class="countdown-label">Seconds</div>
+                </div>
+            `;
+        }
+
+        // Start countdown
+        function startCountdown() {
+            updateCountdown();
+            countdownInterval = setInterval(updateCountdown, 1000);
+        }
+
+        // Calculate streak
+        function calculateStreak(participantName) {
+            const userActivities = activities_log
+                .filter(a => a.participant === participantName)
+                .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+            if (userActivities.length === 0) return 0;
+
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            let streak = 0;
+            let currentDate = new Date(today);
+
+            for (let activity of userActivities) {
+                const activityDate = new Date(activity.timestamp);
+                activityDate.setHours(0, 0, 0, 0);
+                
+                if (activityDate.getTime() === currentDate.getTime()) {
+                    streak++;
+                    currentDate.setDate(currentDate.getDate() - 1);
+                } else if (activityDate < currentDate) {
+                    break;
+                }
+            }
+
+            return streak;
+        }
+
+        // Get week start
+        function getWeekStart() {
+            const now = new Date();
+            const day = now.getDay();
+            const diff = now.getDate() - day + (day === 0 ? -6 : 1);
+            const monday = new Date(now.setDate(diff));
+            monday.setHours(0, 0, 0, 0);
+            return monday;
+        }
+
+        // Calculate weekly points
+        function calculateWeeklyPoints() {
+            const weekStart = getWeekStart();
+            const weeklyParticipants = {};
+
+            activities_log.forEach(activity => {
+                const activityDate = new Date(activity.timestamp);
+                if (activityDate >= weekStart) {
+                    if (!weeklyParticipants[activity.participant]) {
+                        weeklyParticipants[activity.participant] = { totalPoints: 0 };
+                    }
+                    weeklyParticipants[activity.participant].totalPoints += parseFloat(activity.points);
+                }
+            });
+
+            return weeklyParticipants;
+        }
+
+        // Switch tab
+        function switchTab(tab) {
+            currentTab = tab;
+            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            updateLeaderboard();
+        }
 
         // Calculate movement indicator
         function getMovementIndicator(currentRank, lastMonthRank) {
@@ -824,7 +1276,6 @@
             const change = lastMonthRank - currentRank;
             
             if (change > 0) {
-                // Improved
                 const intensity = Math.min(change, 5);
                 const greenShades = ['#86efac', '#4ade80', '#22c55e', '#16a34a', '#15803d'];
                 const bgColor = greenShades[intensity - 1] || greenShades[4];
@@ -833,7 +1284,6 @@
                     class: 'movement-up'
                 };
             } else if (change < 0) {
-                // Declined
                 const intensity = Math.min(Math.abs(change), 5);
                 const redShades = ['#fca5a5', '#f87171', '#ef4444', '#dc2626', '#b91c1c'];
                 const bgColor = redShades[intensity - 1] || redShades[4];
@@ -842,7 +1292,6 @@
                     class: 'movement-down'
                 };
             } else {
-                // Same
                 return { 
                     html: '<div class="movement-indicator movement-same">→</div>',
                     class: 'movement-same'
@@ -867,8 +1316,6 @@
         // API call helper
         async function callAPI(action, data = {}) {
             try {
-                console.log('Calling API with action:', action, 'data:', data);
-                
                 const url = `${API_URL}?action=${action}`;
                 
                 const options = {
@@ -884,23 +1331,16 @@
                     options.body = JSON.stringify({ action, ...data });
                 }
 
-                console.log('Fetch URL:', url);
-                console.log('Fetch options:', options);
-
                 const response = await fetch(url, options);
-                console.log('Response status:', response.status);
                 
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 
                 const result = await response.json();
-                console.log('API response:', result);
-                
                 return result;
             } catch (error) {
                 console.error('API call failed:', error);
-                console.error('Error details:', error.message);
                 throw error;
             }
         }
@@ -908,14 +1348,10 @@
         // Load leaderboard data
         async function loadLeaderboard() {
             try {
-                console.log('Loading leaderboard...');
                 const result = await callAPI('getLeaderboard');
-                
-                console.log('Leaderboard result:', result);
                 
                 if (result.success) {
                     participants = result.participants;
-                    console.log('Participants loaded:', participants);
                     updateLeaderboard();
                     
                     if (!isConnected) {
@@ -935,14 +1371,10 @@
         // Load activities data
         async function loadActivities() {
             try {
-                console.log('Loading activities...');
                 const result = await callAPI('getActivities');
-                
-                console.log('Activities result:', result);
                 
                 if (result.success) {
                     activities_log = result.activities || [];
-                    console.log('Activities loaded:', activities_log);
                     updateActivityLog();
                 } else {
                     throw new Error(result.error || 'Failed to load activities');
@@ -957,11 +1389,19 @@
 
         // Count activities per participant
         function countParticipantActivities(participantName) {
-            return activities_log.filter(activity => activity.participant === participantName).length;
+            const source = currentTab === 'weekly' ? 
+                activities_log.filter(a => new Date(a.timestamp) >= getWeekStart()) : 
+                activities_log;
+            return source.filter(activity => activity.participant === participantName).length;
         }
 
-        // Save activity to Google Sheets
+        // Save activity
         async function saveActivity(participant, activityType, amount) {
+            if (challengeExpired) {
+                alert('Challenge period has ended. Please update the reset date to continue.');
+                return false;
+            }
+
             const activity = activities[activityType];
             const points = amount * activity.multiplier;
             const timestamp = new Date().toISOString();
@@ -977,11 +1417,9 @@
             };
 
             try {
-                console.log('Saving activity:', activityData);
                 const result = await callAPI('addActivity', activityData);
                 
                 if (result.success) {
-                    console.log('Activity saved successfully');
                     await refreshData();
                     return true;
                 } else {
@@ -994,9 +1432,27 @@
             }
         }
 
+        // Undo activity
+        async function undoActivity(activityId) {
+            if (!confirm('Are you sure you want to undo this activity?')) return;
+
+            try {
+                const result = await callAPI('deleteActivity', { id: activityId });
+                
+                if (result.success) {
+                    await refreshData();
+                    alert('Activity removed successfully!');
+                } else {
+                    throw new Error(result.error || 'Failed to remove activity');
+                }
+            } catch (error) {
+                console.error('Error undoing activity:', error);
+                alert('Failed to remove activity: ' + error.message);
+            }
+        }
+
         // Refresh all data
         async function refreshData() {
-            console.log('Refreshing all data...');
             const container = document.querySelector('.container');
             container.classList.add('loading');
             
@@ -1006,7 +1462,6 @@
                     loadActivities()
                 ]);
                 updateLastUpdated();
-                console.log('Data refresh completed');
             } catch (error) {
                 console.error('Error refreshing data:', error);
             } finally {
@@ -1027,10 +1482,9 @@
         function startAutoRefresh() {
             if (autoRefreshInterval) clearInterval(autoRefreshInterval);
             autoRefreshInterval = setInterval(refreshData, 30000);
-            console.log('Auto-refresh started');
         }
 
-        // Update distance label based on selected activity
+        // Update distance label
         function updateDistanceLabel() {
             const activityType = document.getElementById('activityType').value;
             const distanceLabel = document.getElementById('distanceLabel');
@@ -1066,13 +1520,11 @@
 
         // Update leaderboard display
         function updateLeaderboard() {
-            console.log('Updating leaderboard display with participants:', participants);
             const leaderboardContent = document.getElementById('leaderboardContent');
             
-            const sortedParticipants = Object.entries(participants)
+            const dataSource = currentTab === 'weekly' ? calculateWeeklyPoints() : participants;
+            const sortedParticipants = Object.entries(dataSource)
                 .sort(([,a], [,b]) => b.totalPoints - a.totalPoints);
-
-            console.log('Sorted participants:', sortedParticipants);
 
             if (sortedParticipants.length === 0) {
                 leaderboardContent.innerHTML = '<div class="empty-state">No activities recorded yet. Add activities to populate the leaderboard.</div>';
@@ -1089,13 +1541,19 @@
                 if (sortedParticipants[1]) {
                     const [name, data] = sortedParticipants[1];
                     const activityCount = countParticipantActivities(name);
+                    const streak = calculateStreak(name);
+                    const lastMonthRank = lastMonthPlacings[name];
+                    const movement = currentTab === 'overall' ? getMovementIndicator(2, lastMonthRank) : { html: '', class: '' };
+                    
                     html += `
-                        <div class="podium-place second">
+                        <div class="podium-place second" onclick="showPersonalStats('${name}')">
                             <div class="podium-card">
                                 <div class="podium-medal">🥈</div>
                                 <div class="podium-name">${name}</div>
                                 <div class="podium-points">${data.totalPoints.toFixed(1)}</div>
                                 <div class="podium-activities">${activityCount} activities</div>
+                                ${streak > 0 ? `<div class="podium-streak">🔥 ${streak} day streak</div>` : ''}
+                                ${movement.html ? `<div class="podium-movement">${movement.html}</div>` : ''}
                             </div>
                         </div>
                     `;
@@ -1105,13 +1563,19 @@
                 if (sortedParticipants[0]) {
                     const [name, data] = sortedParticipants[0];
                     const activityCount = countParticipantActivities(name);
+                    const streak = calculateStreak(name);
+                    const lastMonthRank = lastMonthPlacings[name];
+                    const movement = currentTab === 'overall' ? getMovementIndicator(1, lastMonthRank) : { html: '', class: '' };
+                    
                     html += `
-                        <div class="podium-place first">
+                        <div class="podium-place first" onclick="showPersonalStats('${name}')">
                             <div class="podium-card">
                                 <div class="podium-medal">🥇</div>
                                 <div class="podium-name">${name}</div>
                                 <div class="podium-points">${data.totalPoints.toFixed(1)}</div>
                                 <div class="podium-activities">${activityCount} activities</div>
+                                ${streak > 0 ? `<div class="podium-streak">🔥 ${streak} day streak</div>` : ''}
+                                ${movement.html ? `<div class="podium-movement">${movement.html}</div>` : ''}
                             </div>
                         </div>
                     `;
@@ -1121,13 +1585,19 @@
                 if (sortedParticipants[2]) {
                     const [name, data] = sortedParticipants[2];
                     const activityCount = countParticipantActivities(name);
+                    const streak = calculateStreak(name);
+                    const lastMonthRank = lastMonthPlacings[name];
+                    const movement = currentTab === 'overall' ? getMovementIndicator(3, lastMonthRank) : { html: '', class: '' };
+                    
                     html += `
-                        <div class="podium-place third">
+                        <div class="podium-place third" onclick="showPersonalStats('${name}')">
                             <div class="podium-card">
                                 <div class="podium-medal">🥉</div>
                                 <div class="podium-name">${name}</div>
                                 <div class="podium-points">${data.totalPoints.toFixed(1)}</div>
                                 <div class="podium-activities">${activityCount} activities</div>
+                                ${streak > 0 ? `<div class="podium-streak">🔥 ${streak} day streak</div>` : ''}
+                                ${movement.html ? `<div class="podium-movement">${movement.html}</div>` : ''}
                             </div>
                         </div>
                     `;
@@ -1136,22 +1606,24 @@
                 html += '</div>';
             }
 
-            // Rest of the leaderboard (4th place and below)
+            // Rest of the leaderboard
             if (sortedParticipants.length > 3) {
                 html += '<div class="leaderboard-list">';
                 
                 sortedParticipants.slice(3).forEach(([name, data], index) => {
                     const rank = index + 4;
                     const activityCount = countParticipantActivities(name);
+                    const streak = calculateStreak(name);
                     const lastMonthRank = lastMonthPlacings[name];
-                    const movement = getMovementIndicator(rank, lastMonthRank);
+                    const movement = currentTab === 'overall' ? getMovementIndicator(rank, lastMonthRank) : { html: '', class: '' };
                     
                     html += `
-                        <div class="leaderboard-item">
+                        <div class="leaderboard-item" onclick="showPersonalStats('${name}')">
                             <div class="rank">#${rank}</div>
                             <div class="participant-info">
                                 <div class="participant-name">${name}</div>
                                 <div class="participant-activities">${activityCount} activities</div>
+                                ${streak > 0 ? `<div class="participant-streak">🔥 ${streak} day streak</div>` : ''}
                             </div>
                             <div class="points">${data.totalPoints.toFixed(1)} <span class="points-unit">pts</span></div>
                             ${movement.html}
@@ -1161,16 +1633,14 @@
                 
                 html += '</div>';
             } else if (sortedParticipants.length <= 3) {
-                // If there are 3 or fewer participants, show them all on podium
                 html += '<div class="empty-state">Add more activities to see the full leaderboard!</div>';
             }
 
             leaderboardContent.innerHTML = html;
         }
 
-        // Update activity log display
+        // Update activity log
         function updateActivityLog() {
-            console.log('Updating activity log with activities:', activities_log);
             const activityLogContent = document.getElementById('activityLogContent');
             
             if (!activities_log || activities_log.length === 0) {
@@ -1178,15 +1648,19 @@
                 return;
             }
 
+            const lastActivityId = activities_log[0]?.id;
+
             let html = '';
-            activities_log.slice(0, 20).forEach(activity => {
+            activities_log.slice(0, 20).forEach((activity, index) => {
                 const date = new Date(activity.timestamp).toLocaleDateString();
                 const time = new Date(activity.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                const canUndo = index === 0 && lastActivityId === activity.id;
                 
                 html += `
-                    <div class="activity-item">
+                    <div class="activity-item ${canUndo ? 'can-undo' : ''}">
                         <div class="activity-header">
-                            ${activity.participant} · ${activity.activity}
+                            <span>${activity.participant} · ${activity.activity}</span>
+                            ${canUndo ? `<button class="undo-button" onclick="undoActivity(${activity.id})">Undo</button>` : ''}
                         </div>
                         <div class="activity-details">
                             <span class="activity-detail-item">${activity.amount} ${activity.unit}</span>
@@ -1202,10 +1676,98 @@
             activityLogContent.innerHTML = html;
         }
 
+        // Show personal stats
+        function showPersonalStats(participantName) {
+            document.getElementById('modalParticipantName').textContent = `${participantName}'s Stats`;
+            document.getElementById('personalStatsModal').classList.add('active');
+            
+            const userActivities = activities_log.filter(a => a.participant === participantName);
+            const totalPoints = participants[participantName]?.totalPoints || 0;
+            const totalActivities = userActivities.length;
+            const streak = calculateStreak(participantName);
+            
+            // Activity breakdown
+            const activityBreakdown = {};
+            userActivities.forEach(a => {
+                if (!activityBreakdown[a.activity]) {
+                    activityBreakdown[a.activity] = { count: 0, points: 0 };
+                }
+                activityBreakdown[a.activity].count++;
+                activityBreakdown[a.activity].points += parseFloat(a.points);
+            });
+
+            const sortedActivities = Object.entries(activityBreakdown)
+                .sort(([,a], [,b]) => b.count - a.count);
+
+            const favoriteActivity = sortedActivities[0]?.[0] || 'None';
+            const avgPointsPerDay = totalActivities > 0 ? (totalPoints / Math.max(1, streak)).toFixed(1) : '0';
+
+            let modalContent = `
+                <div class="stat-grid">
+                    <div class="stat-card">
+                        <div class="stat-label">Total Points</div>
+                        <div class="stat-value">${totalPoints.toFixed(1)}</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Total Activities</div>
+                        <div class="stat-value">${totalActivities}</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Current Streak</div>
+                        <div class="stat-value">${streak > 0 ? '🔥 ' : ''}${streak} days</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Favorite Activity</div>
+                        <div class="stat-value" style="font-size: 1rem;">${favoriteActivity}</div>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <h3 class="chart-title">Activity Breakdown</h3>
+            `;
+
+            if (sortedActivities.length > 0) {
+                sortedActivities.forEach(([activity, data]) => {
+                    modalContent += `
+                        <div class="activity-breakdown-item">
+                            <div>
+                                <div class="activity-breakdown-name">${activity}</div>
+                                <div class="activity-breakdown-count">${data.points.toFixed(1)} points</div>
+                            </div>
+                            <div style="font-weight: 600;">${data.count}x</div>
+                        </div>
+                    `;
+                });
+            } else {
+                modalContent += '<div class="empty-state">No activities yet</div>';
+            }
+
+            modalContent += '</div>';
+
+            document.getElementById('modalContent').innerHTML = modalContent;
+        }
+
+        // Close personal stats
+        function closePersonalStats() {
+            document.getElementById('personalStatsModal').classList.remove('active');
+        }
+
+        // Close modal on overlay click
+        function closeModalOnOverlay(event) {
+            if (event.target.id === 'personalStatsModal') {
+                closePersonalStats();
+            }
+        }
+
         // Handle form submission
         document.getElementById('activityForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
+            if (challengeExpired) {
+                alert('Challenge period has ended. Please update the reset date in the code to continue.');
+                return;
+            }
+
             const submitBtn = document.getElementById('submitBtn');
             const originalText = submitBtn.textContent;
             submitBtn.disabled = true;
@@ -1240,19 +1802,17 @@
 
         // Initialize on page load
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('Page loaded, initializing...');
             updateConnectionStatus('connecting', 'Connecting to data source...');
+            startCountdown();
             refreshData();
         });
 
         // Handle page visibility change
         document.addEventListener('visibilitychange', function() {
             if (!document.hidden && isConnected) {
-                console.log('Page became visible, refreshing data...');
                 refreshData();
             }
         });
     </script>
 </body>
 </html>
-                
