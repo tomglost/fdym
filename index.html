@@ -432,18 +432,12 @@
         .podium-activities {
             font-size: 0.7rem;
             color: var(--text-secondary);
-            margin-bottom: 6px;
-            flex-shrink: 0;
-        }
-
-        .podium-streak {
-            font-size: 0.8rem;
-            margin-top: auto;
+            margin-bottom: 8px;
             flex-shrink: 0;
         }
 
         .podium-movement {
-            margin-top: 6px;
+            margin-top: auto;
             flex-shrink: 0;
         }
 
@@ -900,30 +894,8 @@
             stroke-linejoin: round;
         }
 
-        .chart-line-rank {
-            fill: none;
-            stroke: #f59e0b;
-            stroke-width: 3;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-            stroke-dasharray: 5, 5;
-        }
-
         .chart-dot {
             fill: var(--primary);
-            stroke: white;
-            stroke-width: 2;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .chart-dot:hover {
-            r: 6;
-            stroke-width: 3;
-        }
-
-        .chart-dot-rank {
-            fill: #f59e0b;
             stroke: white;
             stroke-width: 2;
         }
@@ -943,47 +915,6 @@
             stroke-width: 1;
             stroke-dasharray: 2, 2;
             opacity: 0.5;
-        }
-
-        .chart-legend {
-            display: flex;
-            justify-content: center;
-            gap: 24px;
-            margin-top: 16px;
-            font-size: 0.875rem;
-        }
-
-        .chart-legend-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .chart-legend-line {
-            width: 24px;
-            height: 3px;
-            border-radius: 2px;
-        }
-
-        .chart-legend-line.points {
-            background: var(--primary);
-        }
-
-        .chart-legend-line.rank {
-            background: #f59e0b;
-        }
-
-        .chart-tooltip {
-            position: absolute;
-            background: rgba(15, 23, 42, 0.95);
-            color: white;
-            padding: 8px 12px;
-            border-radius: 6px;
-            font-size: 0.75rem;
-            pointer-events: none;
-            z-index: 1000;
-            white-space: nowrap;
-            display: none;
         }
 
         .chart-bar-container {
@@ -1784,7 +1715,6 @@
                 if (sortedParticipants[1]) {
                     const [name, data] = sortedParticipants[1];
                     const activityCount = countParticipantActivities(name);
-                    const streak = calculateStreak(name);
                     const lastMonthRank = lastMonthPlacings[name];
                     const movement = currentTab === 'overall' ? getMovementIndicator(2, lastMonthRank) : { html: '', class: '' };
                     
@@ -1795,7 +1725,6 @@
                                 <div class="podium-name">${name}</div>
                                 <div class="podium-points">${data.totalPoints.toFixed(1)}</div>
                                 <div class="podium-activities">${activityCount} activities</div>
-                                ${streak > 0 ? `<div class="podium-streak">🔥 ${streak} day streak</div>` : ''}
                                 ${movement.html ? `<div class="podium-movement">${movement.html}</div>` : ''}
                             </div>
                         </div>
@@ -1806,7 +1735,6 @@
                 if (sortedParticipants[0]) {
                     const [name, data] = sortedParticipants[0];
                     const activityCount = countParticipantActivities(name);
-                    const streak = calculateStreak(name);
                     const lastMonthRank = lastMonthPlacings[name];
                     const movement = currentTab === 'overall' ? getMovementIndicator(1, lastMonthRank) : { html: '', class: '' };
                     
@@ -1817,7 +1745,6 @@
                                 <div class="podium-name">${name}</div>
                                 <div class="podium-points">${data.totalPoints.toFixed(1)}</div>
                                 <div class="podium-activities">${activityCount} activities</div>
-                                ${streak > 0 ? `<div class="podium-streak">🔥 ${streak} day streak</div>` : ''}
                                 ${movement.html ? `<div class="podium-movement">${movement.html}</div>` : ''}
                             </div>
                         </div>
@@ -1828,7 +1755,6 @@
                 if (sortedParticipants[2]) {
                     const [name, data] = sortedParticipants[2];
                     const activityCount = countParticipantActivities(name);
-                    const streak = calculateStreak(name);
                     const lastMonthRank = lastMonthPlacings[name];
                     const movement = currentTab === 'overall' ? getMovementIndicator(3, lastMonthRank) : { html: '', class: '' };
                     
@@ -1839,7 +1765,6 @@
                                 <div class="podium-name">${name}</div>
                                 <div class="podium-points">${data.totalPoints.toFixed(1)}</div>
                                 <div class="podium-activities">${activityCount} activities</div>
-                                ${streak > 0 ? `<div class="podium-streak">🔥 ${streak} day streak</div>` : ''}
                                 ${movement.html ? `<div class="podium-movement">${movement.html}</div>` : ''}
                             </div>
                         </div>
@@ -2002,20 +1927,8 @@
 
                 <div class="stats-tab-content ${activeTab === 'progress' ? 'active' : ''}">
                     <div class="chart-container">
-                        <h3 class="chart-title">Points & Rank Progress Over Time</h3>
-                        <div class="line-chart-container" id="progressChart">
-                            <div class="chart-tooltip" id="chartTooltip"></div>
-                        </div>
-                        <div class="chart-legend">
-                            <div class="chart-legend-item">
-                                <div class="chart-legend-line points"></div>
-                                <span>Cumulative Points</span>
-                            </div>
-                            <div class="chart-legend-item">
-                                <div class="chart-legend-line rank"></div>
-                                <span>Leaderboard Position</span>
-                            </div>
-                        </div>
+                        <h3 class="chart-title">Cumulative Points Over Time</h3>
+                        <div class="line-chart-container" id="progressChart"></div>
                     </div>
                 </div>
             `;
@@ -2039,7 +1952,7 @@
                 return;
             }
 
-            // Calculate cumulative points and ranks over time
+            // Calculate cumulative points over time
             const dataPoints = [];
             let cumulativePoints = 0;
 
@@ -2047,13 +1960,9 @@
                 cumulativePoints += parseFloat(activity.points);
                 const timestamp = new Date(activity.timestamp);
                 
-                // Calculate rank at this point in time
-                const rank = calculateRankAtTime(participantName, timestamp);
-                
                 dataPoints.push({
                     date: timestamp,
                     points: cumulativePoints,
-                    rank: rank,
                     activity: activity.activity
                 });
             });
@@ -2062,7 +1971,7 @@
             const chartContainer = document.getElementById('progressChart');
             const width = chartContainer.clientWidth - 40;
             const height = 260;
-            const padding = { top: 20, right: 40, bottom: 40, left: 50 };
+            const padding = { top: 20, right: 20, bottom: 40, left: 50 };
             const chartWidth = width - padding.left - padding.right;
             const chartHeight = height - padding.top - padding.bottom;
 
@@ -2083,14 +1992,6 @@
                 svg += `<text class="chart-axis-label" x="${padding.left - 10}" y="${y + 4}" text-anchor="end">${pointValue.toFixed(0)}</text>`;
             }
 
-            // Grid lines for rank (right side)
-            const maxRank = 20; // Assuming 20 participants
-            for (let i = 0; i <= 4; i++) {
-                const rankValue = 1 + (maxRank / 4) * i;
-                const y = padding.top + (chartHeight / 4) * i;
-                svg += `<text class="chart-axis-label" x="${width - padding.right + 10}" y="${y + 4}" text-anchor="start" fill="#f59e0b">#${Math.round(rankValue)}</text>`;
-            }
-
             // X-axis labels (dates)
             const numDateLabels = Math.min(5, dataPoints.length);
             for (let i = 0; i < numDateLabels; i++) {
@@ -2101,31 +2002,25 @@
                 svg += `<text class="chart-axis-label" x="${x}" y="${height - padding.bottom + 20}" text-anchor="middle">${dateLabel}</text>`;
             }
 
-            // Draw lines
+            // Draw line
             let pointsPath = '';
-            let rankPath = '';
 
             dataPoints.forEach((point, i) => {
                 const x = padding.left + (point.date - minDate) / dateRange * chartWidth;
                 const yPoints = padding.top + chartHeight - (point.points / maxPoints * chartHeight);
-                const yRank = padding.top + ((point.rank - 1) / (maxRank - 1)) * chartHeight;
 
                 const command = i === 0 ? 'M' : 'L';
                 pointsPath += `${command} ${x} ${yPoints} `;
-                rankPath += `${command} ${x} ${yRank} `;
             });
 
             svg += `<path class="chart-line-points" d="${pointsPath}" />`;
-            svg += `<path class="chart-line-rank" d="${rankPath}" />`;
 
             // Draw dots
             dataPoints.forEach((point, i) => {
                 const x = padding.left + (point.date - minDate) / dateRange * chartWidth;
                 const yPoints = padding.top + chartHeight - (point.points / maxPoints * chartHeight);
-                const yRank = padding.top + ((point.rank - 1) / (maxRank - 1)) * chartHeight;
 
-                svg += `<circle class="chart-dot" cx="${x}" cy="${yPoints}" r="4" data-index="${i}" data-type="points" />`;
-                svg += `<circle class="chart-dot-rank" cx="${x}" cy="${yRank}" r="4" data-index="${i}" data-type="rank" />`;
+                svg += `<circle class="chart-dot" cx="${x}" cy="${yPoints}" r="4" />`;
             });
 
             // Axes
@@ -2134,40 +2029,10 @@
 
             // Axis labels
             svg += `<text class="chart-axis-label" x="${padding.left / 2}" y="${height / 2}" text-anchor="middle" transform="rotate(-90, ${padding.left / 2}, ${height / 2})" style="font-weight: 600;">Points</text>`;
-            svg += `<text class="chart-axis-label" x="${width - padding.right / 2}" y="${height / 2}" text-anchor="middle" transform="rotate(90, ${width - padding.right / 2}, ${height / 2})" style="font-weight: 600; fill: #f59e0b;">Rank</text>`;
 
             svg += '</svg>';
 
-            chartContainer.innerHTML = '<div class="chart-tooltip" id="chartTooltip"></div>' + svg;
-
-            // Add tooltip functionality
-            const dots = chartContainer.querySelectorAll('.chart-dot, .chart-dot-rank');
-            const tooltip = document.getElementById('chartTooltip');
-
-            dots.forEach(dot => {
-                dot.addEventListener('mouseenter', (e) => {
-                    const index = parseInt(e.target.getAttribute('data-index'));
-                    const point = dataPoints[index];
-                    const dateStr = point.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-                    
-                    tooltip.innerHTML = `
-                        <strong>${dateStr}</strong><br>
-                        Points: ${point.points.toFixed(1)}<br>
-                        Rank: #${point.rank}<br>
-                        Activity: ${point.activity}
-                    `;
-                    tooltip.style.display = 'block';
-                });
-
-                dot.addEventListener('mousemove', (e) => {
-                    tooltip.style.left = (e.pageX - chartContainer.getBoundingClientRect().left + 10) + 'px';
-                    tooltip.style.top = (e.pageY - chartContainer.getBoundingClientRect().top - 10) + 'px';
-                });
-
-                dot.addEventListener('mouseleave', () => {
-                    tooltip.style.display = 'none';
-                });
-            });
+            chartContainer.innerHTML = svg;
         }
 
         // Calculate rank at a specific point in time
