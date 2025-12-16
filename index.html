@@ -339,26 +339,32 @@
             gap: 12px;
             margin-bottom: 32px;
             padding: 20px 0;
+            overflow-x: auto;
+            overflow-y: visible;
         }
 
         .podium-place {
-            flex: 1;
-            max-width: 140px;
+            flex: 0 0 auto;
+            width: 140px;
             display: flex;
             flex-direction: column;
             align-items: center;
             text-align: center;
-            position: relative;
         }
 
         .podium-card {
             width: 100%;
             border-radius: var(--radius);
-            padding: 16px 12px;
+            padding: 12px 10px;
             position: relative;
             border: 2px solid;
             transition: transform 0.2s;
             cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            overflow: hidden;
         }
 
         .podium-card:hover {
@@ -402,36 +408,49 @@
 
         .podium-medal {
             font-size: 2rem;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
+            flex-shrink: 0;
         }
 
         .podium-name {
-            font-size: 0.9375rem;
+            font-size: 0.875rem;
             font-weight: 600;
             color: var(--text-primary);
             margin-bottom: 4px;
+            word-break: break-word;
+            flex-shrink: 0;
         }
 
         .podium-points {
-            font-size: 1.25rem;
+            font-size: 1.125rem;
             font-weight: 700;
             color: var(--primary);
             margin-bottom: 4px;
+            flex-shrink: 0;
         }
 
         .podium-activities {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             color: var(--text-secondary);
-            margin-bottom: 8px;
+            margin-bottom: 6px;
+            flex-shrink: 0;
         }
 
         .podium-streak {
-            font-size: 0.875rem;
-            margin-top: 6px;
+            font-size: 0.8rem;
+            margin-top: auto;
+            flex-shrink: 0;
         }
 
         .podium-movement {
-            margin-top: 8px;
+            margin-top: 6px;
+            flex-shrink: 0;
+        }
+
+        .podium-movement .movement-indicator {
+            min-width: 28px;
+            height: 28px;
+            font-size: 0.75rem;
         }
 
         /* Regular Leaderboard List */
@@ -655,6 +674,14 @@
             font-size: 0.9375rem;
         }
 
+        .click-hint {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.8125rem;
+            margin-top: 16px;
+            font-style: italic;
+        }
+
         .auto-refresh-note {
             font-size: 0.8125rem;
             color: var(--text-secondary);
@@ -741,6 +768,11 @@
         .modal-close:hover {
             background: var(--background);
             color: var(--text-primary);
+        }
+
+        .modal-close:focus {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
         }
 
         .modal-body {
@@ -844,6 +876,114 @@
 
         .progress-chart {
             margin-top: 20px;
+        }
+
+        .line-chart-container {
+            position: relative;
+            height: 300px;
+            padding: 20px;
+            background: var(--background);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+        }
+
+        .chart-svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .chart-line-points {
+            fill: none;
+            stroke: var(--primary);
+            stroke-width: 3;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .chart-line-rank {
+            fill: none;
+            stroke: #f59e0b;
+            stroke-width: 3;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            stroke-dasharray: 5, 5;
+        }
+
+        .chart-dot {
+            fill: var(--primary);
+            stroke: white;
+            stroke-width: 2;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .chart-dot:hover {
+            r: 6;
+            stroke-width: 3;
+        }
+
+        .chart-dot-rank {
+            fill: #f59e0b;
+            stroke: white;
+            stroke-width: 2;
+        }
+
+        .chart-axis {
+            stroke: var(--border);
+            stroke-width: 1;
+        }
+
+        .chart-axis-label {
+            fill: var(--text-secondary);
+            font-size: 12px;
+        }
+
+        .chart-grid-line {
+            stroke: var(--border);
+            stroke-width: 1;
+            stroke-dasharray: 2, 2;
+            opacity: 0.5;
+        }
+
+        .chart-legend {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin-top: 16px;
+            font-size: 0.875rem;
+        }
+
+        .chart-legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .chart-legend-line {
+            width: 24px;
+            height: 3px;
+            border-radius: 2px;
+        }
+
+        .chart-legend-line.points {
+            background: var(--primary);
+        }
+
+        .chart-legend-line.rank {
+            background: #f59e0b;
+        }
+
+        .chart-tooltip {
+            position: absolute;
+            background: rgba(15, 23, 42, 0.95);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            pointer-events: none;
+            z-index: 1000;
+            white-space: nowrap;
+            display: none;
         }
 
         .chart-bar-container {
@@ -1711,6 +1851,7 @@
 
             // Rest of the leaderboard
             if (sortedParticipants.length > 3) {
+                html += '<div class="click-hint">💡 Click on any name to view detailed stats</div>';
                 html += '<div class="leaderboard-list">';
                 
                 sortedParticipants.slice(3).forEach(([name, data], index) => {
@@ -1861,74 +2002,194 @@
 
                 <div class="stats-tab-content ${activeTab === 'progress' ? 'active' : ''}">
                     <div class="chart-container">
-                        <h3 class="chart-title">Points by Activity Type</h3>
-                        <div class="chart-bar-container">
-            `;
-
-            if (sortedActivities.length > 0) {
-                const maxPoints = Math.max(...sortedActivities.map(([, data]) => data.points));
-                
-                sortedActivities.slice(0, 8).forEach(([activity, data]) => {
-                    const heightPercent = (data.points / maxPoints) * 100;
-                    modalContent += `
-                        <div class="chart-bar-wrapper">
-                            <div class="chart-bar" style="height: ${heightPercent}%">
-                                <div class="chart-bar-value">${data.points.toFixed(0)}</div>
+                        <h3 class="chart-title">Points & Rank Progress Over Time</h3>
+                        <div class="line-chart-container" id="progressChart">
+                            <div class="chart-tooltip" id="chartTooltip"></div>
+                        </div>
+                        <div class="chart-legend">
+                            <div class="chart-legend-item">
+                                <div class="chart-legend-line points"></div>
+                                <span>Cumulative Points</span>
                             </div>
-                            <div class="chart-bar-label">${activity}</div>
-                        </div>
-                    `;
-                });
-            } else {
-                modalContent += '<div class="empty-state">No activities yet</div>';
-            }
-
-            modalContent += `
-                        </div>
-                    </div>
-
-                    <div class="chart-container">
-                        <h3 class="chart-title">Daily Activity Count</h3>
-                        <div class="chart-bar-container">
-            `;
-
-            // Daily activity chart
-            const dailyActivity = {};
-            userActivities.forEach(a => {
-                const date = new Date(a.timestamp).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-                if (!dailyActivity[date]) {
-                    dailyActivity[date] = 0;
-                }
-                dailyActivity[date]++;
-            });
-
-            const dailyEntries = Object.entries(dailyActivity).slice(-7); // Last 7 days with activity
-            
-            if (dailyEntries.length > 0) {
-                const maxDaily = Math.max(...dailyEntries.map(([, count]) => count));
-                
-                dailyEntries.forEach(([date, count]) => {
-                    const heightPercent = (count / maxDaily) * 100;
-                    modalContent += `
-                        <div class="chart-bar-wrapper">
-                            <div class="chart-bar" style="height: ${heightPercent}%">
-                                <div class="chart-bar-value">${count}</div>
+                            <div class="chart-legend-item">
+                                <div class="chart-legend-line rank"></div>
+                                <span>Leaderboard Position</span>
                             </div>
-                            <div class="chart-bar-label">${date}</div>
-                        </div>
-                    `;
-                });
-            } else {
-                modalContent += '<div class="empty-state">No activities yet</div>';
-            }
-
-            modalContent += `
                         </div>
                     </div>
                 </div>
             `;
 
             document.getElementById('modalContent').innerHTML = modalContent;
+
+            // Render the line chart if on progress tab
+            if (activeTab === 'progress') {
+                setTimeout(() => renderProgressChart(participantName), 50);
+            }
+        }
+
+        // Render progress line chart
+        function renderProgressChart(participantName) {
+            const userActivities = activities_log
+                .filter(a => a.participant === participantName)
+                .sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+
+            if (userActivities.length === 0) {
+                document.getElementById('progressChart').innerHTML = '<div class="empty-state">No activities yet</div>';
+                return;
+            }
+
+            // Calculate cumulative points and ranks over time
+            const dataPoints = [];
+            let cumulativePoints = 0;
+
+            userActivities.forEach(activity => {
+                cumulativePoints += parseFloat(activity.points);
+                const timestamp = new Date(activity.timestamp);
+                
+                // Calculate rank at this point in time
+                const rank = calculateRankAtTime(participantName, timestamp);
+                
+                dataPoints.push({
+                    date: timestamp,
+                    points: cumulativePoints,
+                    rank: rank,
+                    activity: activity.activity
+                });
+            });
+
+            // Chart dimensions
+            const chartContainer = document.getElementById('progressChart');
+            const width = chartContainer.clientWidth - 40;
+            const height = 260;
+            const padding = { top: 20, right: 40, bottom: 40, left: 50 };
+            const chartWidth = width - padding.left - padding.right;
+            const chartHeight = height - padding.top - padding.bottom;
+
+            // Get min/max values
+            const maxPoints = Math.max(...dataPoints.map(d => d.points));
+            const minDate = dataPoints[0].date;
+            const maxDate = dataPoints[dataPoints.length - 1].date;
+            const dateRange = maxDate - minDate || 1;
+
+            // Create SVG
+            let svg = `<svg class="chart-svg" viewBox="0 0 ${width} ${height}">`;
+
+            // Grid lines for points
+            for (let i = 0; i <= 4; i++) {
+                const y = padding.top + (chartHeight / 4) * i;
+                const pointValue = maxPoints - (maxPoints / 4) * i;
+                svg += `<line class="chart-grid-line" x1="${padding.left}" y1="${y}" x2="${width - padding.right}" y2="${y}" />`;
+                svg += `<text class="chart-axis-label" x="${padding.left - 10}" y="${y + 4}" text-anchor="end">${pointValue.toFixed(0)}</text>`;
+            }
+
+            // Grid lines for rank (right side)
+            const maxRank = 20; // Assuming 20 participants
+            for (let i = 0; i <= 4; i++) {
+                const rankValue = 1 + (maxRank / 4) * i;
+                const y = padding.top + (chartHeight / 4) * i;
+                svg += `<text class="chart-axis-label" x="${width - padding.right + 10}" y="${y + 4}" text-anchor="start" fill="#f59e0b">#${Math.round(rankValue)}</text>`;
+            }
+
+            // X-axis labels (dates)
+            const numDateLabels = Math.min(5, dataPoints.length);
+            for (let i = 0; i < numDateLabels; i++) {
+                const index = Math.floor((dataPoints.length - 1) * (i / (numDateLabels - 1)));
+                const point = dataPoints[index];
+                const x = padding.left + (point.date - minDate) / dateRange * chartWidth;
+                const dateLabel = point.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                svg += `<text class="chart-axis-label" x="${x}" y="${height - padding.bottom + 20}" text-anchor="middle">${dateLabel}</text>`;
+            }
+
+            // Draw lines
+            let pointsPath = '';
+            let rankPath = '';
+
+            dataPoints.forEach((point, i) => {
+                const x = padding.left + (point.date - minDate) / dateRange * chartWidth;
+                const yPoints = padding.top + chartHeight - (point.points / maxPoints * chartHeight);
+                const yRank = padding.top + ((point.rank - 1) / (maxRank - 1)) * chartHeight;
+
+                const command = i === 0 ? 'M' : 'L';
+                pointsPath += `${command} ${x} ${yPoints} `;
+                rankPath += `${command} ${x} ${yRank} `;
+            });
+
+            svg += `<path class="chart-line-points" d="${pointsPath}" />`;
+            svg += `<path class="chart-line-rank" d="${rankPath}" />`;
+
+            // Draw dots
+            dataPoints.forEach((point, i) => {
+                const x = padding.left + (point.date - minDate) / dateRange * chartWidth;
+                const yPoints = padding.top + chartHeight - (point.points / maxPoints * chartHeight);
+                const yRank = padding.top + ((point.rank - 1) / (maxRank - 1)) * chartHeight;
+
+                svg += `<circle class="chart-dot" cx="${x}" cy="${yPoints}" r="4" data-index="${i}" data-type="points" />`;
+                svg += `<circle class="chart-dot-rank" cx="${x}" cy="${yRank}" r="4" data-index="${i}" data-type="rank" />`;
+            });
+
+            // Axes
+            svg += `<line class="chart-axis" x1="${padding.left}" y1="${padding.top}" x2="${padding.left}" y2="${height - padding.bottom}" />`;
+            svg += `<line class="chart-axis" x1="${padding.left}" y1="${height - padding.bottom}" x2="${width - padding.right}" y2="${height - padding.bottom}" />`;
+
+            // Axis labels
+            svg += `<text class="chart-axis-label" x="${padding.left / 2}" y="${height / 2}" text-anchor="middle" transform="rotate(-90, ${padding.left / 2}, ${height / 2})" style="font-weight: 600;">Points</text>`;
+            svg += `<text class="chart-axis-label" x="${width - padding.right / 2}" y="${height / 2}" text-anchor="middle" transform="rotate(90, ${width - padding.right / 2}, ${height / 2})" style="font-weight: 600; fill: #f59e0b;">Rank</text>`;
+
+            svg += '</svg>';
+
+            chartContainer.innerHTML = '<div class="chart-tooltip" id="chartTooltip"></div>' + svg;
+
+            // Add tooltip functionality
+            const dots = chartContainer.querySelectorAll('.chart-dot, .chart-dot-rank');
+            const tooltip = document.getElementById('chartTooltip');
+
+            dots.forEach(dot => {
+                dot.addEventListener('mouseenter', (e) => {
+                    const index = parseInt(e.target.getAttribute('data-index'));
+                    const point = dataPoints[index];
+                    const dateStr = point.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                    
+                    tooltip.innerHTML = `
+                        <strong>${dateStr}</strong><br>
+                        Points: ${point.points.toFixed(1)}<br>
+                        Rank: #${point.rank}<br>
+                        Activity: ${point.activity}
+                    `;
+                    tooltip.style.display = 'block';
+                });
+
+                dot.addEventListener('mousemove', (e) => {
+                    tooltip.style.left = (e.pageX - chartContainer.getBoundingClientRect().left + 10) + 'px';
+                    tooltip.style.top = (e.pageY - chartContainer.getBoundingClientRect().top - 10) + 'px';
+                });
+
+                dot.addEventListener('mouseleave', () => {
+                    tooltip.style.display = 'none';
+                });
+            });
+        }
+
+        // Calculate rank at a specific point in time
+        function calculateRankAtTime(participantName, timestamp) {
+            const pointsAtTime = {};
+            
+            // Calculate everyone's points up to this timestamp
+            activities_log.forEach(activity => {
+                if (new Date(activity.timestamp) <= timestamp) {
+                    if (!pointsAtTime[activity.participant]) {
+                        pointsAtTime[activity.participant] = 0;
+                    }
+                    pointsAtTime[activity.participant] += parseFloat(activity.points);
+                }
+            });
+
+            // Sort by points and find rank
+            const sorted = Object.entries(pointsAtTime)
+                .sort(([,a], [,b]) => b - a);
+
+            const rank = sorted.findIndex(([name]) => name === participantName) + 1;
+            return rank || sorted.length + 1;
         }
 
         // Close personal stats
@@ -1942,6 +2203,16 @@
                 closePersonalStats();
             }
         }
+
+        // Close modal on Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                const modal = document.getElementById('personalStatsModal');
+                if (modal.classList.contains('active')) {
+                    closePersonalStats();
+                }
+            }
+        });
 
         // Handle form submission
         document.getElementById('activityForm').addEventListener('submit', async function(e) {
